@@ -1051,6 +1051,19 @@
   /* telefon i tablet: stos filmów jest pod tekstem, więc nie blednie przy przewijaniu (inaczej filmy wyglądały na wyblakłe) */
   @media (max-width: 820px) { .stos { opacity: 1 !important; transform: none !important; } }
 
+
+  /* ═════════ TELEFON: pod stosem filmów pigułka z miniaturkami — znak, że niżej jest pełne portfolio ═════════ */
+  .wsk { display: none; }
+  @media (max-width: 820px) {
+    .wsk { display: flex; justify-content: center; margin-top: 1.25rem; }
+    .wsk a { display: flex; align-items: center; gap: .65rem; padding: .35rem .9rem .35rem .4rem; border-radius: 62.4375rem; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06), 0 .5rem 1.25rem -.75rem rgba(0, 0, 0, .35); font-size: .875rem; font-weight: 600; color: var(--tekst); transition: transform .12s ease-out; -webkit-tap-highlight-color: transparent; }
+    .wsk a:active { transform: scale(.97); }
+    .wsk .mini { display: flex; }
+    .wsk .mini i { width: 1.9rem; height: 1.9rem; border-radius: 50%; background: center / cover; box-shadow: 0 0 0 2px #fff; margin-left: -.55rem; }
+    .wsk .mini i:first-child { margin-left: 0; }
+    .wsk svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  }
+
   /* na telefonie w pasku zostaje tylko „Kontakt”; tablet mieści całe menu */
   @media (max-width: 560px) {
     .nawigacja nav a:not(.zostaje) { display: none; }
@@ -1089,6 +1102,10 @@
       <div class="foto f3 pion"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/red-bull.jpg" src="zasoby/wideo/red-bull.mp4"></video><span class="kto">Red Bull</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="redbull"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
       <div class="foto f4"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/ibo.jpg" src="zasoby/wideo/ibo.mp4"></video><span class="kto">IBO</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="ibo"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
       <div class="foto f5"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/moje.jpg" src="zasoby/wideo/moje.mp4"></video><span class="kto">Moje filmy</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="moje"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    </div>
+    <!-- telefon: pigułka z miniaturkami pod filmami — niżej jest pełne portfolio -->
+    <div class="wsk">
+      <a href="#druga"><span class="mini" aria-hidden="true"><i style="background-image:url(zasoby/wideo/red-bull.jpg)"></i><i style="background-image:url(zasoby/wideo/pzps.jpg)"></i><i style="background-image:url(zasoby/wideo/allegro.jpg)"></i><i style="background-image:url(zasoby/wideo/ibo.jpg)"></i><i style="background-image:url(zasoby/wideo/moje.jpg)"></i></span><span>Wszystkie projekty</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
     </div>
   </div>
   <div class="marki" data-anim="w" data-bramka="1100" data-resp=".7">
@@ -1594,6 +1611,7 @@
     a.setAttribute('aria-label', tekst); a.textContent = ''; a.append(rolka);
     if (a.closest('.stopka')) a.insertAdjacentHTML('beforeend', '<svg class="ukos" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9 9 3M4 3h5v5"/></svg>');
   });
+
 
 
   // ── Panel górny: stuknięcie w „•••” rozwija zwiniętą pigułkę, wybór linku ją zwija
