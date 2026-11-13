@@ -1048,6 +1048,9 @@
   }
   @media (prefers-reduced-motion: reduce) { .kropki i { animation: none; } }
 
+  /* telefon i tablet: stos filmów jest pod tekstem, więc nie blednie przy przewijaniu (inaczej filmy wyglądały na wyblakłe) */
+  @media (max-width: 820px) { .stos { opacity: 1 !important; transform: none !important; } }
+
   /* na telefonie w pasku zostaje tylko „Kontakt”; tablet mieści całe menu */
   @media (max-width: 560px) {
     .nawigacja nav a:not(.zostaje) { display: none; }
