@@ -832,6 +832,11 @@
   .narzedzia .logo-n { display: block; width: 1.9rem; height: 1.9rem; object-fit: contain; filter: grayscale(1) contrast(1.15); transition: filter .35s, scale .45s cubic-bezier(.34, 1.56, .64, 1); }
   .narzedzia .logo-n.sylwetka { filter: brightness(0); width: 1.7rem; height: 1.7rem; }
   .narzedzia li:hover .logo-n, .narzedzia li:focus-visible .logo-n { filter: none; scale: 1.06; }
+  .narzedzia .logo-n.dotori { width: 2.05rem; height: 2.05rem; }
+  .narzedzia li[data-opis]::after {                             /* Dotori: nazwa + krótki opis w dwóch liniach */
+    content: attr(data-nazwa) "\A" attr(data-opis); white-space: pre-line;
+    width: 15.5rem; text-align: left; line-height: 1.4; padding: .55rem .75rem;
+  }
   .narzedzia li::after {                                         /* pełna nazwa w dymku nad kafelkiem */
     content: attr(data-nazwa); position: absolute; left: 50%; bottom: calc(100% + .55rem);
     translate: -50% .3rem; opacity: 0; pointer-events: none; white-space: nowrap;
@@ -965,7 +970,7 @@
         <li tabindex="0" data-anim="w" data-od=".015" data-nazwa="Premiere Pro"><img class="logo-n" src="zasoby/narzedzia/premiere.svg" alt="Premiere Pro"></li>
         <li tabindex="0" data-anim="w" data-od=".03" data-nazwa="After Effects"><img class="logo-n" src="zasoby/narzedzia/after-effects.svg" alt="After Effects"></li>
         <li tabindex="0" data-anim="w" data-od=".045" data-nazwa="Photoshop"><img class="logo-n" src="zasoby/narzedzia/photoshop.svg" alt="Photoshop"></li>
-        <li tabindex="0" data-anim="w" data-od=".06" data-nazwa="Dotori — mój silnik animacji"><span class="mono">Do</span></li>
+        <li tabindex="0" data-anim="w" data-od=".06" data-nazwa="Dotori" data-opis="Jako zapalony fan programowania, animacji oraz AI piszę własny silnik do tworzenia animacji AI"><img class="logo-n dotori" src="zasoby/narzedzia/dotori.png" alt="Dotori — mój silnik animacji"></li>
         <li tabindex="0" data-anim="w" data-od=".075" data-nazwa="Claude i inne narzędzia AI"><img class="logo-n sylwetka" src="zasoby/narzedzia/claude.svg" alt="Claude"></li>
         <li tabindex="0" data-anim="w" data-od=".09" data-nazwa="Kod"><span class="mono">&lt;/&gt;</span></li>
       </ul>
