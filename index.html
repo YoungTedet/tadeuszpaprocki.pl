@@ -396,7 +396,7 @@
   .portret {
     --p: clamp(0, calc(var(--s) * 4), 1);
     aspect-ratio: 4 / 5; max-height: 72svh; border-radius: var(--r); background: #29292c; color: #8e8e93;
-    transform: scale(calc(.7 + var(--p) * .3)) rotate(calc((1 - var(--p)) * -7deg)); opacity: calc(.3 + var(--p) * .7);
+    transform: scale(calc(.7 + var(--p) * .3)) rotate(calc((1 - var(--p)) * -7deg));   /* od razu w pełnej jasności, tylko się rozwija */
   }
   .scena-omnie .tytul { font-size: clamp(1.875rem, 4.4vw, 3.875rem); }
   .scena-omnie .sl {
@@ -627,6 +627,39 @@
   .stos .foto { box-shadow: 0 1px 1px rgba(0, 0, 0, .08), 0 1.125rem 2.5rem -1.125rem rgba(0, 0, 0, .45), 0 2.75rem 5rem -2.75rem rgba(0, 0, 0, .4); }
   .stos .foto::after, .karta::before { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13); pointer-events: none; }
   .stos .kto { box-shadow: 0 2px .5rem -2px rgba(0, 0, 0, .35); }
+
+  /* „Zobacz” w lewym dolnym rogu karty: sam subtelny napis, pojawia się dopiero po najechaniu na kartę;
+     po najechaniu na napis litery przewijają się falą, rysuje się podkreślenie, strzałka obraca się w ↗; klik otwiera projekt */
+  .stos .zobacz-k {
+    position: absolute; left: .9rem; bottom: .8rem; z-index: 3; cursor: pointer;
+    display: inline-flex; align-items: center; gap: .3rem; padding: .2rem 0;
+    color: #fff; opacity: 0; translate: 0 .35rem;
+    font-size: .6875rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; line-height: 1;
+    text-shadow: 0 1px .4rem rgba(0, 0, 0, .5);
+    transition: opacity .45s ease, translate .55s cubic-bezier(.2, .85, .2, 1);
+  }
+  .stos .zobacz-k::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor;
+    transform: scaleX(0); transform-origin: left center; transition: transform .5s cubic-bezier(.2, .85, .2, 1);
+  }
+  .stos .zobacz-k svg {
+    width: .75rem; height: .75rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    filter: drop-shadow(0 1px .25rem rgba(0, 0, 0, .5)); transition: rotate .5s cubic-bezier(.34, 1.56, .64, 1), translate .5s cubic-bezier(.2, .85, .2, 1);
+  }
+  .stos .zobacz-k .rolka { line-height: 1.25; }
+  @media (hover: hover) {
+    .stos .foto:hover .zobacz-k { opacity: .6; translate: 0 0; }
+    .stos .foto .zobacz-k:hover { opacity: 1; }
+    .stos .foto .zobacz-k:hover::after { transform: scaleX(1); }
+    .stos .foto .zobacz-k:hover svg { rotate: -45deg; translate: .15rem 0; }
+    .stos .foto .zobacz-k:hover .rolka .lt { transform: translateY(-100%); }
+  }
+  @media (hover: none) { .stos .zobacz-k { opacity: .6; translate: 0 0; } }   /* dotyk: bez najechania, więc widać go cicho od razu */
+
+  /* karty projektów: po najechaniu cała karta płynnie lekko rośnie */
+  .karta { transition: scale .6s cubic-bezier(.2, .85, .2, 1); }
+  @media (hover: hover) { .karta:hover { scale: 1.025; } }
+  .karta:active { scale: .985; transition-duration: .15s; }
   .karta h3 { transition: scale .5s cubic-bezier(.2, .8, .2, 1); }
   .karta:hover h3 { scale: 1.04; }
   .guzik { box-shadow: 0 .75rem 1.625rem -.875rem rgba(0, 0, 0, .6); }
@@ -640,7 +673,26 @@
   /* portret z dwóch warstw: tło z tyłu, postać z przodu */
   .portret .pw { position: absolute; inset: -9%; background: center 22% / cover no-repeat; will-change: transform; }
   .portret .pw-tlo { background-image: url(zasoby/foto/portret-tlo.jpg); }
-  .portret .pw-postac { background-image: url(zasoby/foto/portret-postac.webp); }
+  .portret .pw-postac { background-image: url(zasoby/foto/portret-cialo.webp); }
+  /* głowa to osobna warstwa: co jakiś czas lekko się poprawia (przechył wokół podstawy szyi) */
+  .portret .glowa-ruch { position: absolute; inset: 0; background: url(zasoby/foto/portret-glowa.webp) center 22% / cover no-repeat; transform-origin: 52.2% 56%; will-change: transform; }
+  /* mrugnięcie: na ułamek sekundy pojawiają się powieki z klatki z zamkniętymi oczami */
+  .portret .oczy { position: absolute; inset: 0; background: url(zasoby/foto/portret-oczy.webp) center 22% / cover no-repeat; opacity: 0; }
+  /* kropla w wodzie: pojedyncze litery na czas fali */
+  .kropla-litery .lit { display: inline-block; }
+  .portret .oczy.mruga { animation: mrugniecie .2s ease-in-out; }
+  @keyframes mrugniecie { 0%, 100% { opacity: 0; } 35%, 60% { opacity: 1; } }
+  /* tło „O mnie” to 8-sekundowa pętla z Veo: liście lekko się ruszają, w połowie za drzewami przelatuje ptak */
+  .portret .pw-tlo video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 22%; }
+  /* zdarzenia nad spokojną pętlą tła: przelot ptaka albo słońce z promieniami (przenikanie 0,4 s) */
+  .portret .pw-tlo video.tlo-zdarzenie { opacity: 0; transition: opacity .4s linear; }
+  .portret .pw-tlo video.tlo-zdarzenie.tlo-widac { opacity: 1; }
+  /* postać to zdjęcie, więc w czasie słońca sama też lekko się ociepla i rozjaśnia, w rytm światła z klipu */
+  .portret.slonce .pw-postac, .portret.slonce .pw-glowa { animation: slonceNaPostaci 5s ease-in-out; }
+  @keyframes slonceNaPostaci {                                   /* w klipie słońce rośnie od 0,5 s, szczyt 2,5 s, gaśnie do 4,5 s; świeci zza postaci */
+    0%, 10%, 90%, 100% { filter: brightness(1) saturate(1) sepia(0) drop-shadow(0 0 0 rgba(255, 196, 120, 0)); }
+    50% { filter: brightness(1.06) saturate(1.08) sepia(.1) drop-shadow(0 0 1.1rem rgba(255, 196, 120, .5)); }
+  }
   .portret.galezie .pw-tlo { filter: url(#galezie); }
   .wizyt .foto { background: #ececee url(zasoby/foto/twarz.jpg) center / cover; font-size: 0; }
   .wizyt .foto::after { content: none; }
@@ -665,25 +717,6 @@
     -webkit-backdrop-filter: blur(.035em); backdrop-filter: blur(.035em);
     -webkit-mask-image: linear-gradient(transparent, #000 75%); mask-image: linear-gradient(transparent, #000 75%);
   }
-
-
-  /* poświata na nagłówku: jasna, rozciągnięta w bok smuga podąża za kursorem po literach */
-  .start h1 .wer .sl {
-    --kol: var(--tekst); --blask: #1f6bff; --ga: 0;
-    background: radial-gradient(ellipse 20rem 6.875rem at var(--gx, -62.4375rem) var(--gy, -62.4375rem),
-      color-mix(in srgb, var(--blask) calc(var(--ga) * 100%), var(--kol)) 0%, var(--kol) 78%);
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .start h1 .wer > span:not(.sl) .sl { --kol: var(--szary); --blask: #6ea8ff; }
-
-
-  /* żółta poświata za kursorem na wybranych napisach */
-  .blask {
-    background: radial-gradient(ellipse 20rem 6.875rem at var(--gx, -62.4375rem) var(--gy, -62.4375rem),
-      color-mix(in srgb, var(--blask) calc(var(--ga, 0) * 100%), var(--kol)) 0%, var(--kol) 78%);
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .podpis-tadek span.blask { background-size: auto; }
 
 
   /* przyciski „Wyślij mi wiadomość”: powiększenie, przyciąganie do kursora, żółty błysk i strzałka, która wysyła */
@@ -717,8 +750,6 @@
 
 
   /* ramka pod poświatę sięga poza ogonki liter (y, ę, j, g, ą) i akcenty, żeby nic nie było ucinane */
-  .start h1 .wer .sl, .blask { padding: .14em .06em .26em; margin: -.14em -.06em -.26em; }
-  .podpis-tadek span.blask { padding: .02em 0 0; margin: 0; }
 
 
   /* przy odbiciu na dole cały podpis „Tadek” (z rozmyciem) zastępuje kopia, która rośnie w dół
@@ -832,7 +863,31 @@
   .narzedzia .logo-n { display: block; width: 1.9rem; height: 1.9rem; object-fit: contain; filter: grayscale(1) contrast(1.15); transition: filter .35s, scale .45s cubic-bezier(.34, 1.56, .64, 1); }
   .narzedzia .logo-n.sylwetka { filter: brightness(0); width: 1.7rem; height: 1.7rem; }
   .narzedzia li:hover .logo-n, .narzedzia li:focus-visible .logo-n { filter: none; scale: 1.06; }
-  .narzedzia .logo-n.dotori { width: 2.05rem; height: 2.05rem; }
+  /* Dotori macha co 6 s (klatki 0 i 2 z jego arkusza, kolejność [0,2,2,2,0,2,2,0] po 0,2 s — jak w silniku);
+     na czas machania nabiera koloru, po najechaniu macha bez przerwy */
+  .narzedzia .dotori-macha {
+    display: block; height: 2.05rem; aspect-ratio: 99 / 128;
+    background: url(zasoby/narzedzia/dotori-macha.png) 0 0 / 200% 100% no-repeat;
+    filter: grayscale(1) contrast(1.15);
+    animation: dotoriMacha 6s steps(1) 1.2s infinite, dotoriKolor 6s ease-in-out 1.2s infinite;
+    transition: scale .45s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  @keyframes dotoriMacha {
+    0%, 13.333%, 23.333%, 100% { background-position: 0 0; }
+    3.333%, 16.667% { background-position: 100% 0; }
+  }
+  @keyframes dotoriKolor {
+    0%, 33%, 100% { filter: grayscale(1) contrast(1.15); }
+    3%, 26% { filter: grayscale(0) contrast(1); }
+  }
+  .narzedzia li:hover .dotori-macha, .narzedzia li:focus-visible .dotori-macha {
+    animation: dotoriMachaRaz 1.6s steps(1) infinite; filter: none; scale: 1.06;
+  }
+  @keyframes dotoriMachaRaz {
+    0%, 50%, 87.5%, 100% { background-position: 0 0; }
+    12.5%, 62.5% { background-position: 100% 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .narzedzia .dotori-macha { animation: none; } }
   .narzedzia li[data-opis]::after {                             /* Dotori: nazwa + krótki opis w dwóch liniach */
     content: attr(data-nazwa) "\A" attr(data-opis); white-space: pre-line;
     width: 15.5rem; text-align: left; line-height: 1.4; padding: .55rem .75rem;
@@ -867,9 +922,64 @@
   }
   .krazek svg { width: 1.45rem; height: 1.45rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
   .krazek svg .pelny { fill: currentColor; stroke: none; }
+
+  /* wejście przy przewijaniu: krążek wyłania się z mocnego rozmycia, potem kreski ikony same się rysują */
+  .krazek {
+    --ti: clamp(0, calc(var(--t, 1) * 1.25 - .1), 1);
+    --rys: clamp(0, calc((var(--t, 1) - .35) * 1.7), 1);
+    transform: scale(calc(.5 + var(--ti) * .5)) rotate(calc((1 - var(--ti)) * -70deg));
+    filter: blur(calc((1 - var(--ti)) * .9rem));
+  }
+  .krazek svg .ry { stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--rys)); }
+  .krazek svg .pelny { fill-opacity: var(--rys); }
+  .krazek svg .rec { fill: #ff3b30; stroke: none; opacity: 0; }
+  .krazek svg .postep { opacity: 0; }
+  .krazek svg .obiektyw, .krazek svg .kl-l, .krazek svg .kl-p { transition: translate .4s cubic-bezier(.2, .85, .2, 1); }
+  .krazek svg .ostrze { transform-box: view-box; transform-origin: 12.95px 12px; }
+  .krazek svg .kolo { transform-box: view-box; transform-origin: 12px 12px; }
+  .krazek svg .gw1, .krazek svg .gw2, .krazek svg .fala, .krazek svg .gra { transform-box: fill-box; transform-origin: center; }
+
+  /* każda usługa ma po najechaniu własną animację ikony */
+  @media (hover: hover) {
+    .lista-uslug li:hover .ik-kamera .rec { animation: ikRec 1s steps(1) infinite; }
+    .lista-uslug li:hover .ik-kamera .obiektyw { animation: ikZoom 1.4s ease-in-out infinite; }
+    .lista-uslug li:hover .ik-scenariusz .pisz { animation: ikPisz 1.8s cubic-bezier(.4, 0, .2, 1) infinite; }
+    .lista-uslug li:hover .ik-scenariusz .pisz + .pisz { animation-delay: .35s; }
+    .lista-uslug li:hover .ik-montaz .o1 { animation: ikCiach1 .9s cubic-bezier(.5, 0, .3, 1) infinite; }
+    .lista-uslug li:hover .ik-montaz .o2 { animation: ikCiach2 .9s cubic-bezier(.5, 0, .3, 1) infinite; }
+    .lista-uslug li:hover .ik-animacje .gw1 { animation: ikGwiazda 1.6s cubic-bezier(.34, 1.56, .64, 1) infinite; }
+    .lista-uslug li:hover .ik-animacje .gw2 { animation: ikMigot 1.6s ease-in-out .4s infinite; }
+    .lista-uslug li:hover .ik-kolor .kolo { animation: ikObrot 1.8s cubic-bezier(.65, 0, .35, 1) infinite; }
+    .lista-uslug li:hover .ik-dzwiek .fala { animation: ikFala .7s ease-in-out infinite alternate; }
+    .lista-uslug li:hover .ik-dzwiek .fala:nth-child(2) { animation-delay: -.2s; }
+    .lista-uslug li:hover .ik-dzwiek .fala:nth-child(3) { animation-delay: -.45s; }
+    .lista-uslug li:hover .ik-dzwiek .fala:nth-child(4) { animation-delay: -.1s; }
+    .lista-uslug li:hover .ik-dzwiek .fala:nth-child(5) { animation-delay: -.6s; }
+    .lista-uslug li:hover .ik-youtube .postep { opacity: 1; animation: ikPostep 1.8s linear infinite; }
+    .lista-uslug li:hover .ik-youtube .gra { animation: ikPuls 1.8s ease-in-out infinite; }
+    .lista-uslug li:hover .ik-kod .kl-l { translate: -1.3px 0; }
+    .lista-uslug li:hover .ik-kod .kl-p { translate: 1.3px 0; }
+    .lista-uslug li:hover .ik-kod .ukosnik { animation: ikKursor 1s steps(1) infinite; }
+  }
+  @keyframes ikRec { 0% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes ikZoom { 0%, 100% { translate: 0 0; } 50% { translate: 1.4px 0; } }
+  @keyframes ikPisz { 0% { stroke-dashoffset: 1; } 55%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+  @keyframes ikCiach1 { 0%, 100% { rotate: 0deg; } 45% { rotate: -14deg; } }
+  @keyframes ikCiach2 { 0%, 100% { rotate: 0deg; } 45% { rotate: 14deg; } }
+  @keyframes ikGwiazda { 0%, 100% { scale: 1; rotate: 0deg; } 40% { scale: 1.18; rotate: 18deg; } }
+  @keyframes ikMigot { 0%, 100% { scale: 1; opacity: 1; } 50% { scale: .35; opacity: .3; } }
+  @keyframes ikObrot { to { rotate: 360deg; } }
+  @keyframes ikFala { from { scale: 1 .35; } to { scale: 1 1.15; } }
+  @keyframes ikPostep { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes ikPuls { 0%, 100% { scale: 1; } 50% { scale: 1.25; } }
+  @keyframes ikKursor { 0% { opacity: 1; } 50% { opacity: .15; } }
+  @media (prefers-reduced-motion: reduce) {
+    .krazek svg * { animation: none !important; }
+    .krazek { filter: none; }
+  }
   .lista-uslug .nazwa { transition: translate .5s cubic-bezier(.2, .85, .2, 1), opacity .35s; }
   @media (hover: hover) {
-    .lista-uslug li:hover .krazek { rotate: -14deg; scale: 1.12; }
+    .lista-uslug li:hover .krazek { rotate: -6deg; scale: 1.12; }
     .lista-uslug li:hover .nazwa { translate: .45rem 0; }
     .lista-uslug:hover li:not(:hover) > * { opacity: .32; }      /* reszta przygasa, wskazana usługa wychodzi na pierwszy plan */
   }
@@ -909,11 +1019,11 @@
       </a>
     </div>
     <div class="stos" aria-hidden="true">
-      <div class="foto f1 pion"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/allegro.jpg" src="zasoby/wideo/allegro.mp4"></video><span class="kto">Allegro</span></div>
-      <div class="foto f2"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/pzps.jpg" src="zasoby/wideo/pzps.mp4"></video><span class="kto">PZS</span></div>
-      <div class="foto f3 pion"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/red-bull.jpg" src="zasoby/wideo/red-bull.mp4"></video><span class="kto">Red Bull</span></div>
-      <div class="foto f4"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/ibo.jpg" src="zasoby/wideo/ibo.mp4"></video><span class="kto">IBO</span></div>
-      <div class="foto f5"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/moje.jpg" src="zasoby/wideo/moje.mp4"></video><span class="kto">Moje filmy</span></div>
+      <div class="foto f1 pion"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/allegro.jpg" src="zasoby/wideo/allegro.mp4"></video><span class="kto">Allegro</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="allegro"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      <div class="foto f2"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/pzps.jpg" src="zasoby/wideo/pzps.mp4"></video><span class="kto">PZS</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="pzps"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      <div class="foto f3 pion"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/red-bull.jpg" src="zasoby/wideo/red-bull.mp4"></video><span class="kto">Red Bull</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="redbull"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      <div class="foto f4"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/ibo.jpg" src="zasoby/wideo/ibo.mp4"></video><span class="kto">IBO</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="ibo"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      <div class="foto f5"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/moje.jpg" src="zasoby/wideo/moje.mp4"></video><span class="kto">Moje filmy</span><a class="zobacz-k" href="#" tabindex="-1" data-projekt="moje"><span class="zt">Zobacz</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
     </div>
   </div>
   <div class="marki" data-anim="w" data-bramka="1100" data-resp=".7">
@@ -943,7 +1053,7 @@
 <!-- ═════════ O MNIE: PRZYPIĘTA SCENA ═════════ -->
 <section class="scena-omnie" id="o-mnie" data-scena>
   <div class="przypiete"><div class="w uklad-sc">
-    <div class="portret foto" id="portret"><div class="pw pw-tlo"></div><div class="pw pw-postac"></div></div>
+    <div class="portret foto" id="portret"><div class="pw pw-tlo"><video class="tlo-spokoj" muted loop playsinline preload="metadata" poster="zasoby/foto/portret-tlo-start.jpg" src="zasoby/foto/portret-tlo.mp4"></video><video class="tlo-zdarzenie tlo-ptak" muted playsinline preload="auto" poster="zasoby/foto/portret-tlo.jpg" src="zasoby/foto/portret-ptak.mp4"></video><video class="tlo-zdarzenie tlo-slonce" muted playsinline preload="auto" poster="zasoby/foto/portret-tlo.jpg" src="zasoby/foto/portret-swiatlo.mp4"></video></div><div class="pw pw-postac"></div><div class="pw pw-glowa"><div class="glowa-ruch"><div class="oczy"></div></div></div></div>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="galezie" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.018" numOctaves="2" seed="4" result="szum"><animate attributeName="baseFrequency" dur="22s" values="0.009 0.018;0.011 0.015;0.008 0.019;0.009 0.018" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="szum" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
     <div>
       <p class="nadpis">O mnie</p>
@@ -970,20 +1080,20 @@
         <li tabindex="0" data-anim="w" data-od=".015" data-nazwa="Premiere Pro"><img class="logo-n" src="zasoby/narzedzia/premiere.svg" alt="Premiere Pro"></li>
         <li tabindex="0" data-anim="w" data-od=".03" data-nazwa="After Effects"><img class="logo-n" src="zasoby/narzedzia/after-effects.svg" alt="After Effects"></li>
         <li tabindex="0" data-anim="w" data-od=".045" data-nazwa="Photoshop"><img class="logo-n" src="zasoby/narzedzia/photoshop.svg" alt="Photoshop"></li>
-        <li tabindex="0" data-anim="w" data-od=".06" data-nazwa="Dotori" data-opis="Jako zapalony fan programowania, animacji oraz AI piszę własny silnik do tworzenia animacji AI"><img class="logo-n dotori" src="zasoby/narzedzia/dotori.png" alt="Dotori — mój silnik animacji"></li>
+        <li tabindex="0" data-anim="w" data-od=".06" data-nazwa="Dotori" data-opis="Jako zapalony fan programowania, animacji oraz AI piszę własny silnik do tworzenia animacji AI"><span class="dotori-macha" role="img" aria-label="Dotori — mój silnik animacji"></span></li>
         <li tabindex="0" data-anim="w" data-od=".075" data-nazwa="Claude i inne narzędzia AI"><img class="logo-n sylwetka" src="zasoby/narzedzia/claude.svg" alt="Claude"></li>
         <li tabindex="0" data-anim="w" data-od=".09" data-nazwa="Kod"><span class="mono">&lt;/&gt;</span></li>
       </ul>
     </div>
     <ol class="lista-uslug">
-      <li data-anim="w" data-od=".00"><span class="krazek"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="12.5" height="10" rx="2.2"/><path d="M15.5 10.8 21 8v8l-5.5-2.8"/></svg></span><span class="nazwa">Zdjęcia i&nbsp;reżyseria</span></li>
-      <li data-anim="w" data-od=".02"><span class="krazek"><svg viewBox="0 0 24 24"><path d="M6 3.5h8.5L19 8v12.5H6z"/><path d="M14 3.5V8h5M9 12.5h7M9 16h4.5"/></svg></span><span class="nazwa">Scenariusz i&nbsp;storytelling</span></li>
-      <li data-anim="w" data-od=".04"><span class="krazek"><svg viewBox="0 0 24 24"><circle cx="6.5" cy="7" r="2.6"/><circle cx="6.5" cy="17" r="2.6"/><path d="M8.6 8.6 20 17.5M8.6 15.4 20 6.5"/></svg></span><span class="nazwa">Montaż pod emocje i&nbsp;retencję</span></li>
-      <li data-anim="w" data-od=".06"><span class="krazek"><svg viewBox="0 0 24 24"><path d="M10.5 3.5 12.3 9l5.2 1.8-5.2 1.8-1.8 5.4-1.8-5.4L3.5 10.8 8.7 9z"/><path d="M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></span><span class="nazwa">Animacje i&nbsp;motion design</span></li>
-      <li data-anim="w" data-od=".08"><span class="krazek"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" class="pelny"/></svg></span><span class="nazwa">Color grading</span></li>
-      <li data-anim="w" data-od=".10"><span class="krazek"><svg viewBox="0 0 24 24"><path d="M4 10.5v3M8 7.5v9M12 4.5v15M16 8.5v7M20 11v2"/></svg></span><span class="nazwa">Dźwięk i&nbsp;udźwiękowienie</span></li>
-      <li data-anim="w" data-od=".12"><span class="krazek"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="4"/><path d="M10.2 9.3v5.4l4.6-2.7z" class="pelny"/></svg></span><span class="nazwa">Rolki, miniatury i&nbsp;YouTube</span></li>
-      <li data-anim="w" data-od=".14"><span class="krazek"><svg viewBox="0 0 24 24"><path d="M8 7.5 3.5 12 8 16.5M16 7.5l4.5 4.5-4.5 4.5M13.6 5.5l-3.2 13"/></svg></span><span class="nazwa">Narzędzia i&nbsp;automatyzacje z&nbsp;AI</span></li>
+      <li data-anim="w" data-od=".00"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-kamera"><rect class="ry" pathLength="1" x="3" y="7" width="12.5" height="10" rx="2.2"/><path class="ry obiektyw" pathLength="1" d="M15.5 10.8 21 8v8l-5.5-2.8"/><circle class="rec" cx="6.7" cy="10.3" r="1.15"/></svg></span><span class="nazwa">Zdjęcia i&nbsp;reżyseria</span></li>
+      <li data-anim="w" data-od=".02"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-scenariusz"><path class="ry" pathLength="1" d="M6 3.5h8.5L19 8v12.5H6z"/><path class="ry" pathLength="1" d="M14 3.5V8h5"/><path class="ry pisz" pathLength="1" d="M9 12.5h7"/><path class="ry pisz" pathLength="1" d="M9 16h4.5"/></svg></span><span class="nazwa">Scenariusz i&nbsp;storytelling</span></li>
+      <li data-anim="w" data-od=".04"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-montaz"><g class="ostrze o1"><circle class="ry" pathLength="1" cx="6.5" cy="7" r="2.6"/><path class="ry" pathLength="1" d="M8.6 8.6 20 17.5"/></g><g class="ostrze o2"><circle class="ry" pathLength="1" cx="6.5" cy="17" r="2.6"/><path class="ry" pathLength="1" d="M8.6 15.4 20 6.5"/></g></svg></span><span class="nazwa">Montaż pod emocje i&nbsp;retencję</span></li>
+      <li data-anim="w" data-od=".06"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-animacje"><path class="ry gw1" pathLength="1" d="M10.5 3.5 12.3 9l5.2 1.8-5.2 1.8-1.8 5.4-1.8-5.4L3.5 10.8 8.7 9z"/><path class="ry gw2" pathLength="1" d="M18 14.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg></span><span class="nazwa">Animacje i&nbsp;motion design</span></li>
+      <li data-anim="w" data-od=".08"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-kolor"><circle class="ry" pathLength="1" cx="12" cy="12" r="8"/><path class="pelny kolo" d="M12 4a8 8 0 0 1 0 16z"/></svg></span><span class="nazwa">Color grading</span></li>
+      <li data-anim="w" data-od=".10"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-dzwiek"><path class="ry fala" pathLength="1" d="M4 10.5v3"/><path class="ry fala" pathLength="1" d="M8 7.5v9"/><path class="ry fala" pathLength="1" d="M12 4.5v15"/><path class="ry fala" pathLength="1" d="M16 8.5v7"/><path class="ry fala" pathLength="1" d="M20 11v2"/></svg></span><span class="nazwa">Dźwięk i&nbsp;udźwiękowienie</span></li>
+      <li data-anim="w" data-od=".12"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-youtube"><rect class="ry" pathLength="1" x="3" y="5" width="18" height="14" rx="4"/><path class="pelny gra" d="M10.2 9.3v5.4l4.6-2.7z"/><path class="ry postep" pathLength="1" d="M6.5 16.4h11"/></svg></span><span class="nazwa">Rolki, miniatury i&nbsp;YouTube</span></li>
+      <li data-anim="w" data-od=".14"><span class="krazek"><svg viewBox="0 0 24 24" class="ik-kod"><path class="ry kl-l" pathLength="1" d="M8 7.5 3.5 12 8 16.5"/><path class="ry kl-p" pathLength="1" d="M16 7.5l4.5 4.5-4.5 4.5"/><path class="ry ukosnik" pathLength="1" d="M13.6 5.5l-3.2 13"/></svg></span><span class="nazwa">Narzędzia i&nbsp;automatyzacje z&nbsp;AI</span></li>
     </ol>
   </div>
 </section>
@@ -1126,10 +1236,17 @@
   const stos = document.querySelector('.stos');
   const karty = [...stos.querySelectorAll('.foto')].map(el => ({
     el, x: new Sprezyna(innerWidth * 0.7, 0.75, 0.76), y: new Sprezyna(140, 0.75, 0.76), r: new Sprezyna(48, 0.75, 0.76), sk: new Sprezyna(0.7, 0.75, 0.76), o: new Sprezyna(0, 0.4),
+    h: new Sprezyna(0, 0.45, 0.8),                                   // najechanie: film płynnie lekko rośnie
   }));
   karty.forEach((k, i) => { k.gotowa = performance.now() + 380 + i * 150; k.i = i; });   // wlatują po kolei
   let rozrzut = 0;
-  let kolej = [2, 1, 0, 3, 4];                             // kolej[0] = karta na wierzchu (Red Bull)
+  // kolej[0] = karta na wierzchu; tasowanie przenosi wierzch na spód, więc to też kolejność samoczynnej zmiany:
+  // Red Bull → PZS → Moje filmy → Allegro → IBO (indeksy kart: 0 Allegro, 1 PZS, 2 Red Bull, 3 IBO, 4 Moje filmy)
+  let kolej = [2, 1, 4, 0, 3];
+  let ostInter = performance.now(), nadStosem = false;          // samoczynna zmiana co 6 s, gdy nikt nie rusza stosu
+  stos.addEventListener('pointerenter', () => { nadStosem = true; ostInter = performance.now(); });
+  stos.addEventListener('pointerleave', () => { nadStosem = false; ostInter = performance.now(); });
+  stos.addEventListener('pointerdown', () => { ostInter = performance.now(); });
   const POZY = [{ x: 0, y: 0, r: 4, s: 1 }, { x: 0.2, y: -0.09, r: 13, s: 0.94 }, { x: -0.22, y: 0.04, r: -11, s: 0.9 }, { x: 0.3, y: 0.1, r: 18, s: 0.84 }, { x: -0.32, y: -0.07, r: -17, s: 0.82 }];
   let mysz = { x: 0, y: 0 }, ciag = null, wLocie = null, rozlozone = false;
   const szer = () => karty[0].el.offsetWidth;
@@ -1191,6 +1308,16 @@
     };
     k.el.addEventListener('pointerup', pusc);
     k.el.addEventListener('pointercancel', pusc);
+  });
+  karty.forEach(k => {
+    k.el.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') k.h.cel = 1; });
+    k.el.addEventListener('pointerleave', () => { k.h.cel = 0; });
+    const link = k.el.querySelector('.zobacz-k');                      // „Zobacz” otwiera okno projektu, nie tasuje stosu
+    if (link) {
+      link.addEventListener('pointerdown', e => e.stopPropagation());
+      link.addEventListener('pointerup', e => e.stopPropagation());
+      link.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); otworzProjekt(link.dataset.projekt, k.el); });
+    }
   });
   document.querySelector('.start').addEventListener('pointermove', e => {
     if (e.pointerType === 'touch' || SPOKOJ) return;
@@ -1390,7 +1517,7 @@
   }
 
   // ── Imię, menu i linki w stopce: każda litera ma kopię pod spodem, która wjeżdża falą po najechaniu
-  document.querySelectorAll('.gora .imie, .gora nav a, .stopka .dol a').forEach(a => {
+  document.querySelectorAll('.gora .imie, .gora nav a, .stopka .dol a, .stos .zobacz-k .zt').forEach(a => {
     const tekst = a.textContent.trim();
     const warstwa = klasa => {
       const s = document.createElement('span'); s.className = klasa;
@@ -1450,52 +1577,91 @@
     dopasuj(); addEventListener('resize', dopasuj); if (document.fonts) document.fonts.ready.then(dopasuj);
   }
 
-  // ── Poświata na nagłówku: smuga światła za kursorem, płynnie dogania mysz i gaśnie po wyjściu
-  const naglowek = document.querySelector('.start h1');
-  if (naglowek && matchMedia('(hover: hover)').matches) {
-    const cel = { x: 0, y: 0, a: 0 }, poz = { x: 0, y: 0, a: 0 };
-    let biegnie = false, poprzPosw = 0;
-    const krokPosw = n => {
-      const dt = Math.min(0.05, Math.max(0, (n - poprzPosw) / 1000)); poprzPosw = n;
-      const k = 1 - Math.exp(-dt * 12), ka = 1 - Math.exp(-dt * 6);
-      poz.x += (cel.x - poz.x) * k; poz.y += (cel.y - poz.y) * k; poz.a += (cel.a - poz.a) * ka;
-      naglowek.querySelectorAll('.wer:not(.pod):not(.nad) .sl').forEach(sl => {
-        const r = sl.getBoundingClientRect();
-        sl.style.setProperty('--gx', (poz.x - r.left).toFixed(1) + 'px');
-        sl.style.setProperty('--gy', (poz.y - r.top).toFixed(1) + 'px');
-        sl.style.setProperty('--ga', poz.a.toFixed(3));
-      });
-      if (Math.abs(cel.a - poz.a) < 0.002 && cel.a === 0) { biegnie = false; return; }
-      requestAnimationFrame(krokPosw);
-    };
-    const start = () => { if (!biegnie) { biegnie = true; poprzPosw = performance.now(); requestAnimationFrame(krokPosw); } };
-    document.querySelector('.start').addEventListener('pointermove', e => {
-      if (e.pointerType === 'touch') return;
-      const r = naglowek.getBoundingClientRect(), zapas = 90;
-      const blisko = e.clientX > r.left - zapas && e.clientX < r.right + zapas && e.clientY > r.top - zapas && e.clientY < r.bottom + zapas;
-      if (blisko && cel.a === 0) { poz.x = e.clientX; poz.y = e.clientY; }
-      cel.x = e.clientX; cel.y = e.clientY; cel.a = blisko ? 1 : 0; start();
-    });
-    document.querySelector('.start').addEventListener('pointerleave', () => { cel.a = 0; start(); });
-  }
-
   // ── Portret w „O mnie”: tło z tyłu, postać z przodu. Delikatny ruch kamery i gałęzi cały czas,
   //    a pod kursorem warstwy rozjeżdżają się jak w kartach projektów.
   const portret = document.getElementById('portret');
   if (portret && !SPOKOJ) {
     const tloP = portret.querySelector('.pw-tlo'), postacP = portret.querySelector('.pw-postac');
-    if (matchMedia('(hover: hover)').matches) portret.classList.add('galezie');
+    // tło: spokojna pętla (same liście) gra cały czas; nad nią przenikają się zdarzenia — ptak albo słońce.
+    // Pierwszy ptak rusza w chwili pełnego rozwinięcia zdjęcia (w klipie wlatuje ok. 2. sekundy), potem co 15 s ptak albo słońce.
+    // Zegar liczy tylko wtedy, gdy „O mnie” jest na ekranie.
+    const wideoTla = tloP.querySelector('video.tlo-spokoj');
+    const ZDARZENIA = { ptak: tloP.querySelector('video.tlo-ptak'), slonce: tloP.querySelector('video.tlo-slonce') };   // unikalne nazwy: .ptak to cienie ptaków z maty w pytaniach
+    let zdarzenie = null, gasnie = false, pierwszeBylo = false, zegarZd = 0;
+    const PRZEJSCIE = 0.4, CO_ILE = 15;
+    const odpal = rodzaj => {
+      const v = ZDARZENIA[rodzaj]; if (!v) return;
+      zdarzenie = v; gasnie = false; zegarZd = 0;
+      try { v.currentTime = 0; } catch (e) {}
+      const pokaz = () => {                                           // pokazujemy dopiero, gdy film naprawdę wyświetlił klatkę (Safari bywa czarne)
+        v.classList.add('tlo-widac');
+        if (rodzaj === 'slonce') { portret.classList.remove('slonce'); void portret.offsetWidth; portret.classList.add('slonce'); }
+      };
+      v.play().then(() => {
+        if ('requestVideoFrameCallback' in v) v.requestVideoFrameCallback(() => pokaz()); else setTimeout(pokaz, 80);
+      }).catch(() => { if (zdarzenie === v) zdarzenie = null; });
+    };
+    const sterujTlem = (dt, pelny) => {
+      if (!pierwszeBylo) { if (pelny) { pierwszeBylo = true; odpal('ptak'); } return; }
+      if (zdarzenie && !gasnie) {
+        const d = zdarzenie.duration, t = zdarzenie.currentTime;
+        if (d > 0 && t > d - PRZEJSCIE - 0.05) {                       // koniec zdarzenia: płynnie z powrotem do spokojnej pętli
+          gasnie = true; const v = zdarzenie; v.classList.remove('tlo-widac');
+          setTimeout(() => { v.pause(); if (zdarzenie === v) zdarzenie = null; }, PRZEJSCIE * 1000 + 80);
+        }
+      }
+      zegarZd += dt;
+      if (!zdarzenie && zegarZd >= CO_ILE) odpal(Math.random() < 0.5 ? 'ptak' : 'slonce');
+    };
+    const glowaP = portret.querySelector('.pw-glowa'), glowaR = portret.querySelector('.glowa-ruch');
+    // losowo co kilka sekund: lekkie poprawienie głowy (a gdy będzie klatka z zamkniętymi oczami — także mrugnięcie)
+    let nastepnyRuch = performance.now() + 2500, ruchGlowy = null;
+    const poprawGlowe = () => {
+      const zn = Math.random() < 0.5 ? -1 : 1, kat = (1 + Math.random() * 0.6) * zn, dx = zn * 1.2;
+      ruchGlowy = glowaR.animate([
+        { transform: 'none', easing: 'cubic-bezier(.3, 0, .2, 1)' },
+        { transform: `translate(${dx}px, -1.5px) rotate(${kat}deg)`, offset: 0.2, easing: 'cubic-bezier(.4, 0, .4, 1)' },
+        { transform: `translate(${(dx * 0.6).toFixed(2)}px, -0.6px) rotate(${(kat * 0.65).toFixed(2)}deg)`, offset: 0.34 },
+        { transform: `translate(${(dx * 0.6).toFixed(2)}px, -0.6px) rotate(${(kat * 0.65).toFixed(2)}deg)`, offset: 0.72, easing: 'cubic-bezier(.45, 0, .25, 1)' },
+        { transform: 'none' },
+      ], { duration: 2600 + Math.random() * 900 });
+    };
+    // mruganie: jeden zegar (setTimeout w łańcuchu, nigdy dwa naraz) i animacja w CSS, która zawsze kończy się otwartymi oczami
+    const oczyP = portret.querySelector('.oczy');
+    let zegarMrug = null;
+    const mrugnij = () => { oczyP.classList.remove('mruga'); void oczyP.offsetWidth; oczyP.classList.add('mruga'); };
+    oczyP.addEventListener('animationend', () => oczyP.classList.remove('mruga'));
+    const planujMrug = za => {
+      clearTimeout(zegarMrug);
+      zegarMrug = setTimeout(() => { if (widac && !document.hidden) mrugnij(); planujMrug(10000); }, za);   // raz na 10 s
+    };
+    nastepnyRuch = performance.now() + 9000 + Math.random() * 6000;
+    const losujRuch = n => {                                         // głowa: losowo co 9–22,5 s
+      if (n < nastepnyRuch) return;
+      nastepnyRuch = n + 9000 + Math.random() * 13500;
+      if (!(ruchGlowy && ruchGlowy.playState === 'running')) poprawGlowe();
+    };
     const cel = { x: 0, y: 0, h: 0 }, poz = { x: 0, y: 0, h: 0 };
-    let widac = false, t0p = performance.now(), poprzP = t0p;
+    let widac = false, petlaP = false, t0p = performance.now(), poprzP = t0p;
+    const scenaP = portret.closest('[data-scena]');
+    let bylPelny = false, zrywT = -10;                              // drgnięcie kamery, gdy zdjęcie rozwinie się całe
     portret.addEventListener('pointermove', e => {
       if (e.pointerType === 'touch') return;
       const r = portret.getBoundingClientRect();
       cel.x = ((e.clientX - r.left) / r.width - 0.5) * 2; cel.y = ((e.clientY - r.top) / r.height - 0.5) * 2; cel.h = 1;
     });
     portret.addEventListener('pointerleave', () => { cel.x = 0; cel.y = 0; cel.h = 0; });
-    new IntersectionObserver(w => { widac = w[0].isIntersecting; if (widac) { poprzP = performance.now(); requestAnimationFrame(ruchPortretu); } }).observe(portret);
+    new IntersectionObserver(w => {
+      widac = w[0].isIntersecting;
+      [wideoTla, zdarzenie].forEach(v => { if (v) { if (widac) v.play().catch(() => {}); else v.pause(); } });   // gra tylko, gdy widać „O mnie”
+      if (widac) {
+        const teraz = performance.now();                              // po wejściu w kadr: mrugnięcie po 2 s, głowa dopiero później
+        planujMrug(2000); nastepnyRuch = teraz + 6000 + Math.random() * 6000;
+        if (!petlaP) { petlaP = true; poprzP = teraz; requestAnimationFrame(ruchPortretu); }   // zawsze tylko jedna pętla
+      } else { clearTimeout(zegarMrug); oczyP.classList.remove('mruga'); }
+    }).observe(portret);
     function ruchPortretu(n) {
-      if (!widac) return;
+      if (!widac) { petlaP = false; return; }
       const dt = Math.min(0.05, Math.max(0, (n - poprzP) / 1000)); poprzP = n;
       const k = 1 - Math.exp(-dt * 5);
       poz.x += (cel.x - poz.x) * k; poz.y += (cel.y - poz.y) * k; poz.h += (cel.h - poz.h) * k;
@@ -1507,62 +1673,129 @@
       // gałęzie: tło kołysze się trochę inaczej niż postać
       const gx = Math.sin(t * 0.47) * 1.4 + Math.sin(t * 1.13) * 0.5, gy = Math.sin(t * 0.31 + 2) * 0.8;
       const sk = 1 + poz.h * 0.035;
-      tloP.style.transform = `translate3d(${(kx * 0.6 + gx - poz.x * 14).toFixed(2)}px, ${(ky * 0.6 + gy - poz.y * 10).toFixed(2)}px, 0) rotate(${(kr * 0.6).toFixed(3)}deg) scale(${((1 + (ks - 1) * 0.55) * sk).toFixed(4)})`;
-      postacP.style.transform = `translate3d(${(kx + poz.x * 7).toFixed(2)}px, ${(ky + poz.y * 5).toFixed(2)}px, 0) rotate(${kr.toFixed(3)}deg) scale(${(ks * (1 + poz.h * 0.05)).toFixed(4)})`;
+      // przy przewijaniu w dół, w chwili gdy zdjęcie rozwinie się całe: jedno krótkie (~0,45 s), subtelne drgnięcie kamery
+      const sP = parseFloat(scenaP ? scenaP.style.getPropertyValue('--s') : '1') || 0, pelny = Math.min(1, sP * 4) > 0.985;
+      if (pelny && !bylPelny) zrywT = t;
+      bylPelny = pelny;
+      const ti = t - zrywT, zryw = ti >= 0 && ti < 0.45 ? Math.exp(-ti * 9) * (1 - ti / 0.45) : 0;
+      const dx = Math.sin(ti * 44) * 3.2 * zryw, dy = Math.cos(ti * 37 + 0.6) * 2.4 * zryw, dr = Math.sin(ti * 31) * 0.3 * zryw;
+      tloP.style.transform = `translate3d(${(kx * 0.6 + gx - poz.x * 14 + dx).toFixed(2)}px, ${(ky * 0.6 + gy - poz.y * 10 + dy).toFixed(2)}px, 0) rotate(${(kr * 0.6 + dr).toFixed(3)}deg) scale(${((1 + (ks - 1) * 0.55) * sk).toFixed(4)})`;
+      postacP.style.transform = `translate3d(${(kx + poz.x * 7 + dx).toFixed(2)}px, ${(ky + poz.y * 5 + dy).toFixed(2)}px, 0) rotate(${(kr + dr).toFixed(3)}deg) scale(${(ks * (1 + poz.h * 0.05)).toFixed(4)})`;
+      glowaP.style.transform = postacP.style.transform;                // głowa jedzie z kamerą razem z ciałem
+      losujRuch(n);
+      sterujTlem(dt, pelny);
       requestAnimationFrame(ruchPortretu);
     }
   }
 
-  // ── Żółta poświata na: karcie kontaktu, nagłówku pytań, „Zróbmy film.” i wielkim „Tadek”
-  if (matchMedia('(hover: hover)').matches) {
-    const GRUPY = [
-      { pole: '.wizyt h3', cele: '.wizyt h3, .wizyt h3 b' },
-      { pole: '#pytania .tytul', cele: '#pytania .tytul .sl' },
-      { pole: '#uslugi .tytul', cele: '#uslugi .tytul .sl' },
-      { pole: '.stopka h2', cele: '.stopka h2 .wer:not(.pod):not(.nad) .sl, .stopka h2 .wer:not(.pod):not(.nad)' },
-      { pole: '.podpis-tadek', cele: '#podpisTadek' },
-    ].map(g => ({ ...g, a: 0, celA: 0 }));
-    const mysz2 = { x: -999, y: -999 }, pozM = { x: -999, y: -999 };
-    const przygotuj = el => {
-      if (el.dataset.kol) return;
-      const c = getComputedStyle(el).color; el.dataset.kol = c;
-      const m = c.match(/[\d.]+/g) || [0, 0, 0], jasny = (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > 0.45;
-      el.style.setProperty('--kol', c); el.style.setProperty('--blask', jasny ? '#6ea8ff' : '#1f6bff');
-      el.classList.add('blask');
+  // ── Kropla w wodzie: gdy kursor przejeżdża po tekście (a na pierwszym ekranie także sama, co 6–8 s), w tym miejscu
+  //    „wpada kropla”. Litery delikatnie rozjeżdżają się od niej jak tafla wody:
+  //    · w pierwszej chwili litery tuż przy kropli lekko się uginają (uderzenie),
+  //    · krąg biegnie na zewnątrz i zwalnia, robi się szerszy i łagodniejszy (grzbiet odpycha, dolina przyciąga),
+  //    · tuż za nim idzie druga, słabsza fala.
+  //    Na czas fali tekst dzielony jest na litery przesuwane w ułamkach piksela; każda trzyma swoje miejsce
+  //    ze zwykłego tekstu (kerning), więc nic nie przeskakuje. Potem tekst wraca do pierwotnej postaci.
+  if (!SPOKOJ) {
+    const TEKST = 'h1, h2, h3, h4, p, li, summary, button, .guzik, .kto';
+    const aktywne = new Map();                                       // element → { litery, krople }
+    let biegnie = false, ostX = -999, ostY = -999, ostT = 0, ostEl = null;
+    const scal = (el, litery) => {
+      el.classList.remove('kropla-litery');
+      litery.forEach(l => l.sp.replaceWith(l.sp.textContent));
+      el.normalize();
     };
-    let biegnieB = false, poprzB = 0;
-    const krokB = n => {
-      const dt = Math.min(0.05, Math.max(0, (n - poprzB) / 1000)); poprzB = n;
-      const k = 1 - Math.exp(-dt * 12), ka = 1 - Math.exp(-dt * 6);
-      pozM.x += (mysz2.x - pozM.x) * k; pozM.y += (mysz2.y - pozM.y) * k;
-      let dalej = false;
-      GRUPY.forEach(g => {
-        g.a += (g.celA - g.a) * ka;
-        if (g.a < 0.002 && g.celA === 0) { if (g.a !== 0) { g.a = 0; } }
-        else dalej = true;
-        document.querySelectorAll(g.cele).forEach(el => {
-          if (el.matches('.wer') && el.querySelector('.sl')) return;   // słowa mają własną poświatę
-          przygotuj(el);
-          const r = el.getBoundingClientRect();
-          el.style.setProperty('--gx', (pozM.x - r.left).toFixed(1) + 'px');
-          el.style.setProperty('--gy', (pozM.y - r.top).toFixed(1) + 'px');
-          el.style.setProperty('--ga', g.a.toFixed(3));
+    const podziel = el => {
+      const litery = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+        acceptNode: n => (n.parentElement.closest('script, style, svg, .rolka, .lit') || !n.nodeValue.trim()) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+      });
+      const wezly = []; while (w.nextNode()) wezly.push(w.currentNode);
+      wezly.forEach(n => {
+        const f = document.createDocumentFragment();
+        for (const z of n.nodeValue) {
+          if (/\s/.test(z)) { f.append(z); continue; }
+          const sp = document.createElement('span'); sp.className = 'lit'; sp.textContent = z; f.append(sp); litery.push({ sp });
+        }
+        n.replaceWith(f);
+      });
+      if (!litery.length) return litery;
+      const r0 = el.getBoundingClientRect();
+      litery.forEach(l => { const q = l.sp.getBoundingClientRect(); l.bx = q.left; l.bsy = q.top + q.height / 2; });
+      el.classList.add('kropla-litery');
+      let przelamane = false;
+      litery.forEach(l => {
+        const q = l.sp.getBoundingClientRect();
+        l.kx = l.bx - q.left;                                         // poprawka kerningu: litera zostaje na swoim miejscu
+        if (Math.abs(l.bsy - (q.top + q.height / 2)) > 4) przelamane = true;   // tekst przełamałby się inaczej — bez efektu
+        l.x = l.bx + q.width / 2 - r0.left; l.y = l.bsy - r0.top;
+        l.sp.style.transform = `translate(${l.kx.toFixed(2)}px, 0)`;
+      });
+      if (przelamane) { scal(el, litery); return []; }
+      return litery;
+    };
+    // jedna fala w punkcie (odległość d od kropli, czas t w s): grzbiet-dolina na biegnącym, zwalniającym kręgu
+    const fala = (d, t, czoloBazowe) => {
+      const czolo = 6 + 430 * 1.1 * (1 - Math.exp(-t / 1.1)) - czoloBazowe;   // szybko na starcie, potem zwalnia
+      const szer = 34 + 34 * t;                                                // fala się rozlewa
+      const x = (d - czolo) / szer;
+      return -x * Math.exp(-x * x) * 2.33;
+    };
+    const krok = () => {
+      const teraz = performance.now();
+      aktywne.forEach((st, el) => {
+        st.krople = st.krople.filter(k => teraz - k.t0 < k.czas);
+        if (!st.krople.length) { scal(el, st.litery); aktywne.delete(el); return; }
+        st.litery.forEach(l => {
+          let dx = 0, dy = 0;
+          st.krople.forEach(k => {
+            const ms = teraz - k.t0, t = ms / 1000, p = ms / k.czas;
+            const vx = l.x - k.x, vy = l.y - k.y, d = Math.hypot(vx, vy) || 1;
+            const zanik = Math.min(1, p * 7) * Math.pow(1 - p, 1.25) * Math.min(1, 170 / (d + 90));
+            const promien = (fala(d, t, 0) + 0.45 * fala(d, Math.max(0, t - 0.2), 0)) * k.sila * zanik;
+            dx += vx / d * promien; dy += vy / d * promien;
+            if (t < 0.4) dy += k.sila * 0.55 * Math.exp(-((d / 46) ** 2)) * Math.sin(Math.PI * t / 0.4);   // uderzenie kropli
+          });
+          l.sp.style.transform = `translate(${(l.kx + dx).toFixed(2)}px, ${dy.toFixed(2)}px)`;
         });
       });
-      if (dalej) requestAnimationFrame(krokB); else biegnieB = false;
+      if (aktywne.size) requestAnimationFrame(krok); else biegnie = false;
     };
-    addEventListener('pointermove', e => {
-      if (e.pointerType === 'touch') return;
-      const nowa = mysz2.x === -999; mysz2.x = e.clientX; mysz2.y = e.clientY; if (nowa) { pozM.x = e.clientX; pozM.y = e.clientY; }
-      let ktos = false;
-      GRUPY.forEach(g => {
-        const el = document.querySelector(g.pole); if (!el) return;
-        const r = el.getBoundingClientRect(), zap = 90;
-        g.celA = (e.clientX > r.left - zap && e.clientX < r.right + zap && e.clientY > r.top - zap && e.clientY < r.bottom + zap) ? 1 : 0;
-        if (g.celA || g.a > 0.002) ktos = true;
-      });
-      if (ktos && !biegnieB) { biegnieB = true; poprzB = performance.now(); requestAnimationFrame(krokB); }
-    }, { passive: true });
+    const kropla = (el, cx, cy, czas = 1500, sila = 2.2) => {
+      let st = aktywne.get(el);
+      if (!st) {
+        const litery = podziel(el); if (!litery.length) return;
+        st = { litery, krople: [] }; aktywne.set(el, st);
+      }
+      const r = el.getBoundingClientRect();
+      st.krople.push({ x: cx - r.left, y: cy - r.top, t0: performance.now(), czas, sila });
+      if (st.krople.length > 2) st.krople.shift();
+      if (!biegnie) { biegnie = true; requestAnimationFrame(krok); }
+    };
+    if (matchMedia('(hover: hover)').matches) {
+      addEventListener('pointermove', e => {
+        if (e.pointerType === 'touch') return;
+        const el = e.target.closest ? e.target.closest(TEKST) : null;
+        if (!el || el.closest('.stos, #portret, .narzedzia, .okno, .gora, .podpis-tadek') || el.querySelector('video, img, canvas, .rolka') || el.textContent.trim().length < 2) return;
+        const teraz = performance.now(), dal = Math.hypot(e.clientX - ostX, e.clientY - ostY);
+        if (el === ostEl && teraz - ostT < 800 && dal < 120) return;
+        if (teraz - ostT < 250) return;
+        ostX = e.clientX; ostY = e.clientY; ostT = teraz; ostEl = el;
+        kropla(el, e.clientX, e.clientY);
+      }, { passive: true });
+    }
+    // pierwszy ekran: zamiast połysku co 6–8 s sama spada kropla w losowym miejscu nagłówka,
+    // a fala rozchodzi się po nagłówku i dalej po tekstach pod nim
+    const STARTOWE = ['.start h1', '.start .fach', '.start .opis p'];
+    const samaKropla = () => {
+      const h1 = document.querySelector('.start h1');
+      const odUzytkownika = performance.now() - ostT;
+      if (h1 && !document.hidden && scrollY < innerHeight * 0.5 && odUzytkownika > 2000) {
+        const wer = h1.querySelector('.wer:not(.pod):not(.nad)') || h1, r = wer.getBoundingClientRect();
+        const cx = r.left + r.width * (0.2 + Math.random() * 0.6), cy = r.top + r.height * (0.35 + Math.random() * 0.45);
+        STARTOWE.forEach(sel => document.querySelectorAll(sel).forEach(el => kropla(el, cx, cy, 2600, 2.4)));
+      }
+      setTimeout(samaKropla, 6000 + Math.random() * 2000);
+    };
+    setTimeout(samaKropla, 2400);                                    // pierwsza kropla zaraz po wczytaniu, jak wcześniej połysk
   }
 
   // ── Przyciski przyciągają się lekko do kursora
@@ -1575,44 +1808,6 @@
       });
       g.addEventListener('pointerleave', () => { g.style.setProperty('--bx', '0px'); g.style.setProperty('--by', '0px'); });
     });
-  }
-
-  // ── Połysk na pierwszym ekranie: co kilka sekund żółte światło przelatuje ukośnie
-  //    przez nagłówek i wszystkie teksty pod nim. Pierwszy raz zaraz po wczytaniu.
-  if (!SPOKOJ) {
-    const kol = document.querySelector('.start .srodek > div:first-child');
-    const CELE = '.start h1 .wer:not(.pod):not(.nad) .sl, .start .fach .sl, .start .opis .sl';
-    const szykuj = el => {
-      if (el.closest('h1') || el.dataset.kol) return;
-      const c = getComputedStyle(el).color; el.dataset.kol = c;
-      const m = c.match(/[\d.]+/g) || [0, 0, 0], jasny = (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > 0.45;
-      el.style.setProperty('--kol', c); el.style.setProperty('--blask', jasny ? '#6ea8ff' : '#1f6bff');
-      el.classList.add('blask');
-    };
-    const CZAS = 1700, CO = 5200, PIERWSZY = 1900;
-    let start0 = performance.now() + PIERWSZY;
-    const przelot = n => {
-      if (document.hidden || scrollY > innerHeight * 0.8 || !kol) { start0 = n + 800; requestAnimationFrame(przelot); return; }
-      const t = n - start0;
-      if (t >= 0 && t <= CZAS) {
-        const kr = kol.getBoundingClientRect(), pr = t / CZAS;
-        const e = pr < 0.5 ? 2 * pr * pr : 1 - Math.pow(-2 * pr + 2, 2) / 2;          // płynny start i hamowanie
-        const sx = kr.left - 260 + e * (kr.width + 620), ga = Math.sin(Math.PI * pr);
-        document.querySelectorAll(CELE).forEach(el => {
-          szykuj(el);
-          const r = el.getBoundingClientRect();
-          const x = sx - (r.top - kr.top) * 0.45;                                      // ukośna smuga
-          el.style.setProperty('--gx', (x - r.left).toFixed(1) + 'px');
-          el.style.setProperty('--gy', (r.height / 2).toFixed(1) + 'px');
-          el.style.setProperty('--ga', ga.toFixed(3));
-        });
-      } else if (t > CZAS) {
-        document.querySelectorAll(CELE).forEach(el => el.style.setProperty('--ga', '0'));
-        start0 += CO;
-      }
-      requestAnimationFrame(przelot);
-    };
-    requestAnimationFrame(przelot);
   }
 
   // ── Odbicie na dole: po dojechaniu do końca strona zjeżdża jeszcze kawałek z rosnącym oporem
@@ -1730,7 +1925,7 @@
     ostY = y;
 
     if (!rozlozone && n - t0 > 380) { rozlozone = true; cele(); }
-    if (rozlozone && n - t0 < 1400) cele();
+    if (rozlozone && (n - t0 < 1400 || karty.some(k => k.o.cel !== 1))) cele();   // dokładaj, aż wlecą wszystkie (też przy wolnych klatkach)
     const nowyRoz = SPOKOJ ? 0 : ogr(y / (vh * 0.8));
     if (Math.abs(nowyRoz - rozrzut) > 0.002) { rozrzut = nowyRoz; if (rozlozone) cele(); }
     mocnaKlatka(n, dt, y, vh);
@@ -1738,12 +1933,16 @@
       const k = wLocie.k, wraca = k.x.x * k.x.v + k.y.x * k.y.v < 0;
       if ((wraca && n - wLocie.t > 60) || n - wLocie.t > 450) { wLocie = null; cele(); }
     }
+    // bez interakcji przez 6 s: następny film na wierzch (pauza nad stosem, przy przeciąganiu, poza ekranem i przy otwartym oknie)
+    if (rozlozone && !SPOKOJ && !nadStosem && !ciag && !wLocie && rozrzut < 0.25 && n - ostInter > 6000 && !okno.classList.contains('widac')) {
+      ostInter = n; naSpod(karty[kolej[0]], 2600, -600);
+    }
     karty.forEach(k => {
-      [k.x, k.y, k.r, k.sk, k.o].forEach(sp => { if (!sp.stoi) sp.krok(dt); });
+      [k.x, k.y, k.r, k.sk, k.o, k.h].forEach(sp => { if (!sp.stoi) sp.krok(dt); });
       const ts = n / 1000, faza = k.i * 1.7, spokojna = SPOKOJ || (ciag && ciag.k === k) ? 0 : 1;
       const ix = Math.cos(ts * 0.43 + faza) * 3.5 * spokojna, iy = Math.sin(ts * 0.57 + faza * 1.3) * 4.5 * spokojna;
       const ir = (Math.sin(ts * 0.37 + faza) * 1.6 + Math.sin(ts * 0.91 + faza * 2) * 0.4) * spokojna;
-      k.el.style.transform = `translate3d(${(k.x.x + ix).toFixed(2)}px, ${(k.y.x + iy).toFixed(2)}px, 0) rotateX(${(-pochY.x * 8).toFixed(2)}deg) rotateY(${(pochX.x * 11).toFixed(2)}deg) rotate(${(k.r.x + ir).toFixed(2)}deg) scale(${k.sk.x.toFixed(4)})`;
+      k.el.style.transform = `translate3d(${(k.x.x + ix).toFixed(2)}px, ${(k.y.x + iy).toFixed(2)}px, 0) rotateX(${(-pochY.x * 8).toFixed(2)}deg) rotateY(${(pochX.x * 11).toFixed(2)}deg) rotate(${(k.r.x + ir).toFixed(2)}deg) scale(${(k.sk.x * (1 + k.h.x * 0.06)).toFixed(4)})`;
       k.el.style.opacity = k.o.x.toFixed(3);
     });
     requestAnimationFrame(klatka);
