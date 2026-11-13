@@ -832,7 +832,7 @@
     .przypiete { position: static; height: auto; padding: 5rem 0; }
   }
   @media (prefers-reduced-transparency: reduce) {
-    .gora { background: var(--tlo); -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .pigula { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
   }
 
   @media (max-width: 820px) {
@@ -1008,6 +1008,46 @@
     .krazek { width: 2.9rem; height: 2.9rem; }
   }
 
+
+  /* ═════════ PANEL GÓRNY jak u Gaku: pływająca pigułka na środku; niżej zwija się do awatara, imienia i „•••” ═════════ */
+  .gora { background: none; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none !important; transform: none !important; pointer-events: none; }
+  .gora .nawigacja { justify-content: center; padding: .75rem var(--bok); }
+  .pigula {
+    pointer-events: auto; display: flex; align-items: center;
+    padding: .3rem; border-radius: 62.4375rem;
+    background: rgba(255, 255, 255, .78); -webkit-backdrop-filter: saturate(180%) blur(1rem); backdrop-filter: saturate(180%) blur(1rem);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .06), 0 .6rem 1.6rem -.9rem rgba(0, 0, 0, .35);
+  }
+  .pigula .imie { display: flex; align-items: center; gap: .55rem; padding: 0 .85rem 0 0; color: var(--tekst); transition: padding .55s cubic-bezier(.2, .85, .2, 1); }
+  .awatar { flex: none; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: url(zasoby/foto/twarz.jpg) center 30% / cover; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08); }
+  @media (hover: hover) { .gora .imie:hover .imie-t .rolka .lt { transform: translateY(-100%); } }
+  .menu-zwin { display: grid; grid-template-columns: 1fr; transition: grid-template-columns .55s cubic-bezier(.2, .85, .2, 1), opacity .35s ease; }
+  .menu-zwin > nav { min-width: 0; overflow: hidden; }
+  .gora nav { margin-right: 0; }
+  .gora nav a.zostaje { margin-left: .3rem; background: rgba(0, 0, 0, .06); color: var(--tekst); }
+  .kropki {
+    appearance: none; border: 0; background: none; cursor: pointer; padding: 0; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; gap: .2rem; width: 0; height: 1.9rem; opacity: 0;
+    transition: width .55s cubic-bezier(.2, .85, .2, 1), opacity .3s ease;
+  }
+  .kropki i { flex: none; width: .26rem; height: .26rem; border-radius: 50%; background: var(--tekst); animation: kropki 1.8s ease-in-out infinite; }
+  .kropki i:nth-child(2) { animation-delay: .15s; }
+  .kropki i:nth-child(3) { animation-delay: .3s; }
+  @keyframes kropki { 0%, 55%, 100% { transform: scale(1); opacity: .4; } 25% { transform: scale(1.45); opacity: 1; } }
+  .gora.zwiniety .menu-zwin { grid-template-columns: 0fr; opacity: 0; pointer-events: none; }
+  .gora.zwiniety .kropki { width: 2.4rem; opacity: 1; }
+  .gora.zwiniety .pigula .imie { padding-right: .2rem; }
+  /* rozwinięcie zwiniętej pigułki: najechanie (komputer) albo stuknięcie w kropki (telefon) */
+  .gora.zwiniety.otwarte .menu-zwin { grid-template-columns: 1fr; opacity: 1; pointer-events: auto; }
+  .gora.zwiniety.otwarte .kropki { width: 0; opacity: 0; }
+  .gora.zwiniety.otwarte .pigula .imie { padding-right: .85rem; }
+  @media (hover: hover) {
+    .gora.zwiniety .pigula:hover .menu-zwin { grid-template-columns: 1fr; opacity: 1; pointer-events: auto; }
+    .gora.zwiniety .pigula:hover .kropki { width: 0; opacity: 0; }
+    .gora.zwiniety .pigula:hover .imie { padding-right: .85rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .kropki i { animation: none; } }
+
   /* na telefonie w pasku zostaje tylko „Kontakt”; tablet mieści całe menu */
   @media (max-width: 560px) {
     .nawigacja nav a:not(.zostaje) { display: none; }
@@ -1017,9 +1057,12 @@
 <body>
 
 <div class="gora" id="gora">
-  <header class="nawigacja w">
-    <a class="imie" href="#">Tadeusz Paprocki</a>
-    <nav><a href="#druga">Projekty</a><a href="#o-mnie">O mnie</a><a href="#pytania">Pytania</a><a class="zostaje" href="#kontakt">Kontakt</a></nav>
+  <header class="nawigacja">
+    <div class="pigula">
+      <a class="imie" href="#" aria-label="Tadeusz Paprocki — na górę strony"><span class="awatar" aria-hidden="true"></span><span class="imie-t">Tadeusz Paprocki</span></a>
+      <div class="menu-zwin"><nav><a href="#druga">Projekty</a><a href="#o-mnie">O mnie</a><a href="#pytania">Pytania</a><a class="zostaje" href="#kontakt">Kontakt</a></nav></div>
+      <button class="kropki" type="button" aria-label="Pokaż menu"><i></i><i></i><i></i></button>
+    </div>
   </header>
 </div>
 
@@ -1536,7 +1579,7 @@
   }
 
   // ── Imię, menu i linki w stopce: każda litera ma kopię pod spodem, która wjeżdża falą po najechaniu
-  document.querySelectorAll('.gora .imie, .gora nav a, .stopka .dol a, .stos .zobacz-k .zt').forEach(a => {
+  document.querySelectorAll('.gora .imie-t, .gora nav a, .stopka .dol a, .stos .zobacz-k .zt').forEach(a => {
     const tekst = a.textContent.trim();
     const warstwa = klasa => {
       const s = document.createElement('span'); s.className = klasa;
@@ -1548,6 +1591,14 @@
     a.setAttribute('aria-label', tekst); a.textContent = ''; a.append(rolka);
     if (a.closest('.stopka')) a.insertAdjacentHTML('beforeend', '<svg class="ukos" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9 9 3M4 3h5v5"/></svg>');
   });
+
+
+  // ── Panel górny: stuknięcie w „•••” rozwija zwiniętą pigułkę, wybór linku ją zwija
+  {
+    const goraP = document.getElementById('gora');
+    goraP.querySelector('.kropki').addEventListener('click', () => { goraP.classList.add('otwarte'); goraP.dataset.yOtw = scrollY; });
+    goraP.querySelectorAll('nav a').forEach(a => a.addEventListener('click', () => goraP.classList.remove('otwarte')));
+  }
 
   // ── Pigułka w menu
   const navM = document.querySelector('.gora nav');
@@ -1949,8 +2000,8 @@
 
     srodek.style.setProperty('--wyj', SPOKOJ ? 0 : ogr(y / (vh * 0.8)).toFixed(3));
     gora.classList.toggle('przew', y > 8);
-    if (y > ostY + 4 && y > 240) gora.classList.add('schowana');
-    else if (y < ostY - 4 || y < 240) gora.classList.remove('schowana');
+    gora.classList.toggle('zwiniety', y > 240);                   // jak u Gaku: niżej panel zwija się do awatara, imienia i „•••”
+    if (gora.classList.contains('otwarte') && Math.abs(y - (+gora.dataset.yOtw || 0)) > 160) gora.classList.remove('otwarte');
     ostY = y;
 
     if (!rozlozone && n - t0 > 380) { rozlozone = true; cele(); }
