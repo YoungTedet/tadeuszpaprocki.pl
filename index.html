@@ -1,0 +1,1765 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tadeusz Paprocki — filmowiec i programista</title>
+<meta name="description" content="Opowiadam historie filmem. Kamera, montaż, storytelling, animacje, kod. Tworzyłem m.in. dla Red Bulla, Polskiego Związku Siatkówki i Allegro.">
+<meta name="theme-color" content="#fafafa">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tadeusz Paprocki — filmowiec i programista">
+<meta property="og:description" content="Opowiadam historie filmem. Kamera, montaż, storytelling, animacje, kod.">
+<meta property="og:image" content="https://tadeuszpaprocki.pl/zasoby/wideo/pzps.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231c1c1e'/%3E%3Ctext x='32' y='42' font-family='-apple-system,Helvetica,Arial,sans-serif' font-size='27' font-weight='700' letter-spacing='-2' text-anchor='middle' fill='%23fff'%3ETP%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --tekst: #1c1c1e;
+    --szary: #8e8e93;
+    --srodek: #55555a;
+    --tlo: #fafafa;
+    --plyta: #ececee;
+    --linia: #e3e3e6;
+    --szer: 75rem;
+    --bok: clamp(1.25rem, 4vw, 3rem);
+    --r: 1.375rem;
+  }
+  /* skala całej strony: do 1440×900 wszystko jak w projekcie (1rem = 16px),
+     na większych monitorach rośnie proporcjonalnie — według węższego z wymiarów, żeby pierwszy ekran zawsze się mieścił */
+  html { font-size: clamp(16px, min(1.1111vw, 1.7778vh), 32px); }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--tlo); color: var(--tekst);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.0625rem; line-height: 1.4; letter-spacing: -.015em;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, p, ul { margin: 0; padding: 0; }
+  ul { list-style: none; }
+  a { color: inherit; text-decoration: none; }
+  .w { width: 100%; max-width: var(--szer); margin: 0 auto; padding-left: var(--bok); padding-right: var(--bok); }
+
+  /* Przełącznik wariantów: tylko do porównania, nie jest częścią projektu */
+  .wybor {
+    position: fixed; z-index: 10; left: 50%; bottom: 1rem; translate: -50% 0;
+    display: flex; gap: 2px; padding: .25rem;
+    background: #1c1c1e; border-radius: .75rem; font-size: .8125rem; letter-spacing: 0;
+  }
+  .wybor button {
+    appearance: none; border: 0; cursor: pointer; font: inherit;
+    background: none; color: #c7c7cc; padding: .5rem .875rem; border-radius: .5625rem; white-space: nowrap;
+  }
+  .wybor button:hover { color: #fff; }
+  .wybor button[aria-pressed="true"] { background: #fff; color: #1c1c1e; }
+  body[data-wariant="1"] .q1, body[data-wariant="2"] .q2, body[data-wariant="3"] .q3, body[data-wariant="4"] .q4, body[data-wariant="5"] .q5 { display: block; }
+  .q { border-top: 1px solid var(--linia); }
+
+  /* ───────── Start (wybrany wariant 1) ───────── */
+  .start { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; }
+  .nawigacja { display: flex; justify-content: space-between; align-items: center; padding-top: 1.375rem; padding-bottom: 1.375rem; font-size: .9375rem; font-weight: 500; }
+  .nawigacja nav { display: flex; gap: clamp(.875rem, 2.4vw, 1.875rem); }
+  .nawigacja nav a { color: var(--srodek); }
+  .nawigacja nav a:hover { color: var(--tekst); }
+  .imie { font-weight: 600; }
+  .guzik {
+    display: inline-flex; align-items: center; gap: .625rem;
+    background: var(--tekst); color: #fff;
+    padding: .9375rem 1.375rem; border-radius: 62.4375rem; font-size: 1rem; font-weight: 600;
+  }
+  .guzik:hover { background: #000; }
+  .guzik svg { width: .9375rem; height: .9375rem; }
+  .start .srodek {
+    flex: 1; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(1.75rem, 5vw, 5rem);
+    align-items: center; padding-top: 2rem; padding-bottom: 3rem;
+  }
+  .start h1 { font-size: clamp(2.375rem, 5.5vw, 5rem); font-weight: 600; line-height: 1; letter-spacing: -.05em; }
+  .start h1 .wer > span:not(.sl) { display: block; color: var(--szary); }
+  .start .fach { margin-top: 1.625rem; font-size: 1rem; font-weight: 600; letter-spacing: -.01em; }
+  .start .opis { margin-top: 1.375rem; max-width: 26em; color: var(--srodek); font-size: 1.125rem; }
+  .start .opis b, .akapit b { color: var(--tekst); font-weight: 600; }
+  .start .opis p + p { margin-top: .75rem; }
+  .start .guzik { margin-top: 2.125rem; }
+  .foto { background: var(--plyta); color: #a4a4aa; font-size: .75rem; letter-spacing: 0; display: grid; place-items: center; text-align: center; }
+  .stos { position: relative; aspect-ratio: 1 / .78; }
+  .stos .foto { position: absolute; border-radius: 1.125rem; }
+  .stos .f1 { inset: 4% 24% 14% 0; rotate: -7deg; background: #e2e2e5; }
+  .stos .f2 { inset: 0 2% 18% 28%; rotate: 9deg; background: #d9d9dd; }
+  .stos .f3 { inset: 9% 9% 5% 9%; rotate: 4deg; background: #cfcfd4; color: #77777d; }
+  .marki { border-top: 1px solid var(--linia); border-bottom: 1px solid var(--linia); }
+  .marki .w { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem clamp(1.75rem, 6vw, 5.25rem); padding-top: 1.875rem; padding-bottom: 2.125rem; }
+  .marki .dla { font-size: 1.25rem; font-weight: 500; color: var(--szary); letter-spacing: -.03em; }
+  .marki .dla b { color: var(--tekst); font-weight: 600; }
+  .marki li { font-size: clamp(1.0625rem, 1.7vw, 1.375rem); font-weight: 700; color: #a4a4aa; letter-spacing: -.03em; }
+
+  /* ───────── Wspólne dla drugiej planszy ───────── */
+  .plansza { padding-top: clamp(4rem, 11vh, 7.5rem); padding-bottom: clamp(4rem, 11vh, 7.5rem); }
+  .tytul { font-size: clamp(2.125rem, 4.6vw, 4rem); font-weight: 600; line-height: 1.02; letter-spacing: -.05em; }
+  .tytul > span:not(.sl) { color: var(--szary); }
+  .glowka { display: flex; justify-content: space-between; align-items: end; gap: 1.25rem; margin-bottom: clamp(1.5rem, 4vh, 2.75rem); }
+  .glowka a { font-size: .9375rem; font-weight: 600; white-space: nowrap; border-bottom: 1px solid var(--tekst); padding-bottom: 2px; }
+
+  /* ───────── 1. Projekty ───────── */
+  .siatka { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .875rem; }
+  .karta { position: relative; border-radius: var(--r); overflow: hidden; display: block; }
+  .karta .foto { position: absolute; inset: 0; transition: scale .5s cubic-bezier(.2, .7, .2, 1); }
+  .karta:hover .foto { scale: 1.04; }
+  .karta.duza { grid-column: span 3; aspect-ratio: 4 / 3; }
+  .karta.mala { grid-column: span 2; aspect-ratio: 4 / 3.4; }
+  .karta:nth-child(1) .foto { background: #d6d6da; }
+  .karta:nth-child(2) .foto { background: #e1e1e4; }
+  .karta:nth-child(3) .foto { background: #e6e6e9; }
+  .karta:nth-child(4) .foto { background: #dbdbdf; }
+  .karta:nth-child(5) .foto { background: #cfcfd4; }
+  .karta .rodzaj {
+    position: absolute; left: 1rem; top: 1rem;
+    background: #fff; border-radius: 62.4375rem; padding: .375rem .75rem; font-size: .8125rem; font-weight: 600; letter-spacing: 0;
+  }
+  .karta .podpis {
+    position: absolute; left: 1.25rem; right: 1.25rem; bottom: 1.125rem;
+    display: flex; justify-content: space-between; align-items: end; gap: .75rem;
+  }
+  .karta h3 { font-size: clamp(1.25rem, 2.2vw, 1.875rem); font-weight: 600; letter-spacing: -.04em; line-height: 1.05; }
+  .karta .zobacz { font-size: .875rem; font-weight: 600; white-space: nowrap; }
+
+  /* ───────── 2. Manifest ───────── */
+  .akapit {
+    max-width: 19em;
+    font-size: clamp(1.75rem, 4.3vw, 3.75rem); font-weight: 600; line-height: 1.08; letter-spacing: -.045em;
+    color: var(--szary);
+  }
+  .filary { margin-top: clamp(2.5rem, 7vh, 5rem); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(1.25rem, 3vw, 2.75rem); }
+  .filary li { border-top: 1px solid var(--tekst); padding-top: 1rem; }
+  .filary small { display: block; font-size: .75rem; color: var(--szary); letter-spacing: 0; margin-bottom: .375rem; }
+  .filary h3 { font-size: clamp(1.1875rem, 2vw, 1.625rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.1; }
+  .filary p { margin-top: .5rem; color: var(--srodek); font-size: 1rem; max-width: 22em; }
+
+  /* ───────── 3. Showreel ───────── */
+  .p3 .uklad { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: end; }
+  .p3 .obok p { margin-top: 1.125rem; color: var(--srodek); max-width: 20em; }
+  .p3 .obok ul { margin-top: 1.625rem; border-top: 1px solid var(--linia); }
+  .p3 .obok li { display: flex; justify-content: space-between; gap: .75rem; padding: .75rem 0; border-bottom: 1px solid var(--linia); font-size: .9375rem; }
+  .p3 .obok li span { color: var(--szary); }
+  .film { position: relative; aspect-ratio: 16 / 9; border-radius: var(--r); overflow: hidden; background: #1c1c1e; color: #fff; display: grid; place-items: center; }
+  .film .graj { width: 5.25rem; height: 5.25rem; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  .film .graj svg { width: 1.625rem; height: 1.625rem; margin-left: .25rem; fill: #1c1c1e; }
+  .film .stopka { position: absolute; left: 1.375rem; right: 1.375rem; bottom: 1.125rem; display: flex; justify-content: space-between; font-size: .875rem; color: #a4a4aa; }
+  .film .stopka b { color: #fff; font-weight: 600; }
+
+
+  /* ───────── Trzecia plansza: wspólne ───────── */
+  .wstep { max-width: 30em; margin-top: 1.125rem; color: var(--srodek); font-size: 1.125rem; }
+  .wstep b { color: var(--tekst); font-weight: 600; }
+  .mala-glowka { font-size: .8125rem; color: var(--szary); letter-spacing: 0; padding-bottom: .75rem; border-bottom: 1px solid var(--tekst); }
+  .wiersze li { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .9375rem 0; border-bottom: 1px solid var(--linia); }
+  .wiersze b { font-size: clamp(1.125rem, 1.8vw, 1.4375rem); font-weight: 600; letter-spacing: -.035em; }
+  .wiersze span { color: var(--szary); font-size: .9375rem; text-align: right; }
+
+  /* ───────── 1. Każdy styl animacji ───────── */
+  .style { margin-top: clamp(1.75rem, 5vh, 3.25rem); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .875rem; }
+  .style .foto { aspect-ratio: 4 / 5; border-radius: var(--r); }
+  .style li:nth-child(1) .foto { background: #1c1c1e; color: #8e8e93; }
+  .style li:nth-child(2) .foto { background: #d6d6da; }
+  .style li:nth-child(3) .foto { background: #e6e6e9; }
+  .style li:nth-child(4) .foto { background: #cfcfd4; }
+  .style b { display: block; margin-top: .75rem; font-size: 1.0625rem; font-weight: 600; letter-spacing: -.03em; }
+  .style small { color: var(--szary); font-size: .875rem; letter-spacing: 0; }
+
+  /* ───────── 2. Narzędzia ───────── */
+  .dwa { margin-top: clamp(1.75rem, 5vh, 3.25rem); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.25rem clamp(1.75rem, 5vw, 4.5rem); }
+
+  /* ───────── 3. O mnie ───────── */
+  .omnie { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(1.75rem, 5vw, 5rem); align-items: center; }
+  .omnie .foto { aspect-ratio: 4 / 5; border-radius: var(--r); background: #d9d9dd; color: #77777d; }
+  .omnie .wiersze { margin-top: 1.875rem; border-top: 1px solid var(--tekst); }
+  .omnie .linki { margin-top: 1.625rem; display: flex; gap: 1.5rem; font-size: .9375rem; font-weight: 600; }
+  .omnie .linki a { border-bottom: 1px solid var(--tekst); padding-bottom: 2px; }
+
+
+  /* ───────── O mnie 2: list ───────── */
+  .etykieta { font-size: .875rem; color: var(--szary); letter-spacing: 0; margin-bottom: 1.375rem; }
+  .list .tresc {
+    max-width: 21em;
+    font-size: clamp(1.625rem, 3.7vw, 3.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -.045em;
+    color: var(--szary);
+  }
+  .list .tresc b { color: var(--tekst); font-weight: 600; }
+  .list .tresc p + p { margin-top: .55em; }
+  .podpis-o { margin-top: clamp(2rem, 6vh, 3.75rem); display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.125rem; }
+  .podpis-o .foto { width: 4rem; height: 4rem; border-radius: 50%; background: #d0d0d5; font-size: .625rem; color: #77777d; }
+  .podpis-o b { display: block; font-size: 1.125rem; font-weight: 600; letter-spacing: -.03em; }
+  .podpis-o span { color: var(--szary); font-size: .9375rem; }
+  .podpis-o .linki { margin-left: auto; display: flex; gap: 1.5rem; font-size: .9375rem; font-weight: 600; }
+  .podpis-o .linki a { border-bottom: 1px solid var(--tekst); padding-bottom: 2px; }
+
+  /* ───────── O mnie 3: dwie połowy ───────── */
+  .polowy { position: relative; container-type: inline-size; margin-top: clamp(1.75rem, 5vh, 3.25rem); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .875rem; }
+  .polowa .foto { aspect-ratio: 4 / 3; border-radius: var(--r); }
+  .polowa:nth-child(1) .foto { background: #d6d6da; color: #77777d; }
+  .polowa:nth-child(2) .foto { background: #1c1c1e; color: #8e8e93; }
+  .polowa h3 { margin-top: 1.25rem; font-size: clamp(1.625rem, 3.2vw, 2.75rem); font-weight: 600; letter-spacing: -.045em; line-height: 1; }
+  .polowa .wiersze { margin-top: 1rem; border-top: 1px solid var(--tekst); }
+  .plus {
+    position: absolute; left: 50%; top: calc((50cqw - .4375rem) * .375); translate: -50% -50%; z-index: 1;
+    width: 4rem; height: 4rem; border-radius: 50%;
+    background: var(--tlo); display: grid; place-items: center;
+  }
+  .plus svg { width: 1.375rem; height: 1.375rem; }
+  .razem { margin-top: clamp(1.75rem, 5vh, 3rem); max-width: 34em; color: var(--srodek); font-size: 1.125rem; }
+  .razem b { color: var(--tekst); font-weight: 600; }
+
+
+  /* ───────── O mnie 4: pytania i odpowiedzi ───────── */
+  .pytania { margin-top: clamp(1.75rem, 5vh, 3.25rem); border-top: 1px solid var(--tekst); }
+  .pytania li { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: .5rem clamp(1.5rem, 4vw, 4rem); padding: clamp(1.25rem, 3.4vh, 2.125rem) 0; border-bottom: 1px solid var(--linia); align-items: baseline; }
+  .pytania h3 { font-size: 1rem; font-weight: 500; color: var(--szary); letter-spacing: -.01em; }
+  .pytania p { font-size: clamp(1.25rem, 2.4vw, 2rem); font-weight: 600; line-height: 1.14; letter-spacing: -.04em; max-width: 22em; }
+
+  /* ───────── O mnie 5: duże zdjęcie z kartą ───────── */
+  .szerokie { position: relative; }
+  .szerokie > .foto { aspect-ratio: 21 / 10; border-radius: var(--r); background: #d0d0d5; color: #77777d; align-content: start; padding-top: 1.75rem; }
+  .wizytowka {
+    position: absolute; left: 1.125rem; bottom: 1.125rem; width: min(28.75rem, calc(100% - 2.25rem));
+    background: var(--tlo); border-radius: 1rem; padding: clamp(1.25rem, 2.4vw, 2rem);
+  }
+  .wizytowka h2 { font-size: clamp(1.625rem, 3vw, 2.5rem); font-weight: 600; line-height: 1.02; letter-spacing: -.045em; }
+  .wizytowka h2 span { color: var(--szary); }
+  .wizytowka p { margin-top: .875rem; color: var(--srodek); font-size: 1rem; }
+  .wizytowka p b { color: var(--tekst); font-weight: 600; }
+  .wizytowka .linki { margin-top: 1.125rem; display: flex; gap: 1.375rem; font-size: .9375rem; font-weight: 600; color: var(--tekst); }
+  .wizytowka .linki a { border-bottom: 1px solid var(--tekst); padding-bottom: 2px; }
+  .trzy { margin-top: .875rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .875rem; }
+  .trzy .foto { aspect-ratio: 16 / 10; border-radius: var(--r); }
+  .trzy li:nth-child(1) .foto { background: #e4e4e7; }
+  .trzy li:nth-child(2) .foto { background: #dadade; }
+  .trzy li:nth-child(3) .foto { background: #1c1c1e; color: #8e8e93; }
+
+
+  /* ───────── O mnie: portret + tekst ───────── */
+  .omnie { align-items: start; }
+  .omnie .foto { position: sticky; top: 1.5rem; }
+  .omnie .tytul > span:not(.sl) { display: block; }
+  .tekst { margin-top: clamp(1.5rem, 4vh, 2.5rem); max-width: 33em; font-size: 1.125rem; line-height: 1.5; color: var(--srodek); }
+  .tekst p + p { margin-top: 1.15em; }
+  .tekst b { color: var(--tekst); font-weight: 600; }
+  .tekst .nizej { display: inline-block; margin-top: 1.6em; color: var(--tekst); font-weight: 600; border-bottom: 1px solid var(--tekst); padding-bottom: 2px; }
+
+
+  /* ───────── Pytania i odpowiedzi ───────── */
+  .faq { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(1.75rem, 4vw, 3.5rem); align-items: start; }
+  .faq .tytul > span:not(.sl) { display: block; }
+  .pyt { margin-top: clamp(1.75rem, 5vh, 3.25rem); display: grid; gap: .75rem; }
+  .pyt details { background: #fff; border: 1px solid var(--linia); border-radius: .875rem; }
+  .pyt summary {
+    list-style: none; cursor: pointer;
+    display: grid; grid-template-columns: 1.875rem minmax(0, 1fr) 1.125rem; gap: .625rem; align-items: center;
+    padding: 1.0625rem 1.25rem; font-size: 1.0625rem; font-weight: 600; letter-spacing: -.025em;
+  }
+  .pyt summary::-webkit-details-marker { display: none; }
+  .pyt summary small { font-size: .9375rem; font-weight: 400; color: var(--szary); letter-spacing: 0; }
+  .pyt summary svg { width: .875rem; height: .875rem; transition: rotate .25s; }
+  .pyt details[open] summary svg { rotate: 45deg; }
+  .pyt summary:focus-visible { outline: 2px solid var(--tekst); outline-offset: 2px; border-radius: .875rem; }
+  .pyt .odp { padding: 0 3rem 1.25rem 3.75rem; color: var(--srodek); max-width: 40em; }
+  .wizyt { position: sticky; top: max(5.25rem, calc(50svh - 13.4375rem)); margin-top: clamp(7.5rem, 13.5vw, 12.5rem); background: #fff; border: 1px solid var(--linia); border-radius: var(--r); padding: clamp(1.5rem, 3vw, 2.25rem); }
+  .wizyt .foto { width: 4.5rem; height: 4.5rem; border-radius: 50%; background: #d0d0d5; font-size: .625rem; color: #77777d; }
+  .wizyt h3 { margin-top: 1.75rem; font-size: clamp(1.625rem, 2.8vw, 2.25rem); font-weight: 600; line-height: 1.06; letter-spacing: -.045em; color: var(--szary); }
+  .wizyt h3 b { display: block; color: var(--tekst); font-weight: 600; }
+  .wizyt p { margin-top: 1rem; color: var(--srodek); font-size: 1rem; }
+  .wizyt .guzik { margin-top: 1.625rem; }
+
+
+  /* ───────── Ruch ───────── */
+  html { scroll-behavior: smooth; }
+  section[id], aside[id] { scroll-margin-top: 5.25rem; }
+
+  .gora {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(250, 250, 250, .72);
+    -webkit-backdrop-filter: saturate(180%) blur(1.25rem); backdrop-filter: saturate(180%) blur(1.25rem);
+    transition: transform .5s cubic-bezier(.2, .8, .2, 1), box-shadow .3s;
+  }
+  .gora.przew { box-shadow: 0 1px 0 var(--linia); }
+  .gora.schowana { transform: translateY(-100%); }
+  .gora .nawigacja { padding-top: 1rem; padding-bottom: 1rem; }
+  .start { min-height: calc(100svh - 3.5rem); }
+
+  .guzik { transition: scale .12s ease-out, background .2s; }
+  .guzik:active { scale: .96; }
+  .guzik svg { transition: translate .3s cubic-bezier(.2, .8, .2, 1); }
+  .guzik:hover svg { translate: .1875rem 0; }
+  .karta { transition: scale .15s ease-out; }
+  .karta:active { scale: .985; }
+
+  /* --t idzie od 0 do 1; bez JavaScriptu wszystko jest po prostu widoczne */
+  [data-anim], [data-slowa] { --t: 1; }
+  [data-anim="w"] { opacity: var(--t); transform: translateY(calc((1 - var(--t)) * 1.625rem)); }
+  [data-anim="karta"] {
+    opacity: clamp(0, calc(var(--t) * 1.6), 1);
+    transform: translateY(calc((1 - var(--t)) * 4.375rem)) scale(calc(.93 + var(--t) * .07));
+  }
+  [data-anim="maska"] {
+    clip-path: inset(calc((1 - var(--t)) * 14%) calc((1 - var(--t)) * 10%) round var(--r));
+    opacity: clamp(0, calc(var(--t) * 3), 1);
+  }
+  [data-anim="swiatlo"] { opacity: calc(.18 + var(--t) * .82); transform: translateY(calc((1 - var(--t)) * .625rem)); }
+  [data-anim="szklo"] {
+    opacity: var(--t); transform: scale(calc(.95 + var(--t) * .05));
+    filter: blur(calc((1 - var(--t)) * .75rem));
+  }
+  .sl {
+    display: inline-block;
+    --l: clamp(0, calc(var(--t) * var(--rozp, 1) - var(--i) * .14), 1);
+    opacity: var(--l);
+    transform: translateY(calc((1 - var(--l)) * .4em));
+    filter: blur(calc((1 - var(--l)) * .4375rem));
+  }
+
+  /* start odjeżdża przy przewijaniu */
+  .start .srodek { --wyj: 0; }
+  .start .srodek > div:first-child { opacity: calc(1 - var(--wyj) * 1.15); transform: translateY(calc(var(--wyj) * -2.25rem)); }
+  .stos { transform: translateY(calc(var(--wyj) * 3.125rem)) scale(calc(1 - var(--wyj) * .08)); opacity: calc(1 - var(--wyj) * .6); }
+
+  /* stos zdjęć: wszystkie karty w jednym miejscu, pozy nadaje skrypt */
+  .stos .foto.foto { inset: 10% 13%; rotate: none; will-change: transform; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; }
+  .stos .foto.ciagnie { cursor: grabbing; }
+
+  .odp-w { overflow: hidden; }
+
+  /* ───────── Stopka ───────── */
+  .stopka { border-top: 1px solid var(--linia); padding-top: clamp(4.5rem, 14vh, 10rem); padding-bottom: 1.75rem; }
+  .stopka h2 { font-size: clamp(3rem, 10vw, 9.375rem); font-weight: 600; line-height: .95; letter-spacing: -.055em; }
+  .stopka .guzik { margin-top: 2.25rem; }
+  .stopka .dol {
+    margin-top: clamp(4rem, 12vh, 8.75rem); padding-top: 1.125rem; border-top: 1px solid var(--linia);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: .625rem 1.5rem; font-size: .875rem; color: var(--szary);
+  }
+  .stopka .dol a { color: var(--tekst); margin-left: 1.875rem; }
+  .stopka .dol a:first-child { margin-left: 0; }
+
+
+  /* ═════════ WERSJA MOCNA ═════════ */
+  .start { overflow-x: clip; }
+  #pytania, .stopka, #druga { overflow-x: clip; }
+  .sl {
+    transform: translateY(calc((1 - var(--l)) * .9em)) scale(calc(.9 + var(--l) * .1));
+    filter: blur(calc((1 - var(--l)) * .875rem)); transform-origin: left bottom;
+  }
+  [data-anim="w"] { transform: translateY(calc((1 - var(--t)) * 3.5rem)); filter: blur(calc((1 - var(--t)) * .5rem)); }
+  [data-anim="karta"] {
+    transform: perspective(81.25rem) translateY(calc((1 - var(--t)) * 8.125rem)) rotateX(calc((1 - var(--t)) * 20deg)) scale(calc(.84 + var(--t) * .16));
+    transform-origin: 50% 100%;
+  }
+  .pyt details[data-anim="w"] { transform: translateX(calc((1 - var(--t)) * 5rem)); filter: none; }
+  .guzik[data-anim="w"] { filter: none; }
+  .sl.znak { display: inline; }                                 /* interpunkcja trzyma się słowa przed nią */                       /* przycisk nigdy nie jest rozmyty, tylko wjeżdża */
+  [data-anim="szklo"] {
+    transform: scale(calc(.86 + var(--t) * .14)) translateY(calc((1 - var(--t)) * 2.5rem));
+    filter: blur(calc((1 - var(--t)) * 1.375rem));
+  }
+  .start .srodek > div:first-child {
+    opacity: calc(1 - var(--wyj) * 1.3);
+    transform: translateY(calc(var(--wyj) * -5.625rem)) scale(calc(1 - var(--wyj) * .08));
+    filter: blur(calc(var(--wyj) * .625rem)); transform-origin: left center;
+  }
+  .stos { perspective: 68.75rem; transform: translateY(calc(var(--wyj) * 1.25rem)); opacity: calc(1 - var(--wyj) * .35); }
+  .stopka h2 { transform: scale(calc(.55 + var(--t) * .45)); transform-origin: left bottom; }
+
+  /* karty projektów: głębia za kursorem i kółko „Zobacz” */
+  .karta .foto, .karta:hover .foto { scale: 1.1; translate: calc(var(--mx, 0) * -1rem) calc(var(--my, 0) * -1rem); transition: none; }
+  .karta .podpis, .karta .rodzaj { translate: calc(var(--mx, 0) * .5625rem) calc(var(--my, 0) * .5625rem); }
+  .babel {
+    position: fixed; left: 0; top: 0; z-index: 30; width: 6.5rem; height: 6.5rem; border-radius: 50%;
+    background: var(--tekst); color: #fff; display: grid; place-items: center;
+    font-size: .9375rem; font-weight: 600; pointer-events: none; transform: scale(0); will-change: transform;
+  }
+  @media (hover: hover) { .karta { cursor: none; } .karta .zobacz { display: none; } }
+  @media (hover: none) { .babel { display: none; } }
+
+  /* loga jako jadąca taśma */
+  .marki .w { flex-wrap: nowrap; }
+  .marki .dla { flex: none; }
+  .okno { flex: 1; min-width: 0; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+  .tasma-marek { display: flex; width: max-content; will-change: transform; }
+  .okno { cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .okno.trzymam { cursor: grabbing; }
+  .okno img { -webkit-user-drag: none; pointer-events: none; }
+  .tasma-marek ul { display: flex; flex: none; gap: clamp(2.5rem, 7vw, 6rem); padding-right: clamp(2.5rem, 7vw, 6rem); }
+  .tasma-marek li { white-space: nowrap; font-size: clamp(1.1875rem, 2vw, 1.625rem); font-weight: 700; color: #a4a4aa; letter-spacing: -.03em; }
+
+  /* „O mnie” jako przypięta, ciemna scena */
+  .scena-omnie {
+    height: 340vh; background: #0a0a0b; color: #f5f5f7; --s: 0; --wej: 1;
+    margin-top: clamp(2.5rem, 8vh, 5.625rem);
+    clip-path: inset(0 calc((1 - var(--wej)) * 5vw) round calc((1 - var(--wej)) * 2.75rem));
+  }
+  .przypiete { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; align-items: center; overflow: hidden; }
+  .uklad-sc { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(1.75rem, 5vw, 5rem); align-items: center; }
+  .portret {
+    --p: clamp(0, calc(var(--s) * 4), 1);
+    aspect-ratio: 4 / 5; max-height: 72svh; border-radius: var(--r); background: #29292c; color: #8e8e93;
+    transform: scale(calc(.7 + var(--p) * .3)) rotate(calc((1 - var(--p)) * -7deg)); opacity: calc(.3 + var(--p) * .7);
+  }
+  .scena-omnie .tytul { font-size: clamp(1.875rem, 4.4vw, 3.875rem); }
+  .scena-omnie .sl {
+    --l: clamp(0, calc(var(--s) * var(--jedn, 1) - var(--i)), 1);
+    opacity: calc(.16 + var(--l) * .84); transform: none; filter: none;
+  }
+  .wiersze-sc { margin-top: clamp(1.25rem, 4vh, 2.5rem); display: grid; gap: .8em; max-width: 32em; font-size: clamp(1.0625rem, 1.5vw, 1.3125rem); line-height: 1.4; }
+  .wiersz {
+    --l: clamp(0, calc((var(--s) * var(--jedn, 1) - var(--i)) / 2), 1);
+    opacity: calc(.14 + var(--l) * .86); transform: translateY(calc((1 - var(--l)) * .875rem));
+  }
+  .wiersz b { font-weight: 600; }
+
+
+  /* ═════════ Marki, zmienny nagłówek, emoji, strzałka, zielona mata ═════════ */
+  .marki .wiecej, .tasma-marek .wiecej { color: var(--tekst); font-weight: 600; }
+
+  .zmienny { display: grid; }
+  .wer {
+    grid-area: 1 / 1; display: block; will-change: transform;
+    transition: transform .9s cubic-bezier(.2, .85, .25, 1), opacity .5s, filter .5s;
+  }
+  .wer.pod { transform: translateY(55%); opacity: 0; filter: blur(.75rem); }
+  .wer.nad { transform: translateY(-55%); opacity: 0; filter: blur(.75rem); }
+  .wer.bez { transition: none; }
+
+  .fach { position: relative; z-index: 3; }
+  .um { position: relative; display: inline-block; cursor: default; transition: translate .35s cubic-bezier(.3, 1.5, .5, 1); }
+  .um::after {
+    content: attr(data-e); position: absolute; left: 50%; top: 100%; z-index: 5;
+    font-size: 2.8em; line-height: 1; pointer-events: none;
+    translate: -50% -75%; scale: .3; opacity: 0;
+    transition: translate .45s cubic-bezier(.3, 1.5, .5, 1), scale .45s cubic-bezier(.3, 1.5, .5, 1), opacity .18s;
+  }
+  .um:hover, .um:focus-visible { translate: 0 -.1875rem; outline: none; }
+  .um:hover::after, .um:focus-visible::after { translate: -50% .375rem; scale: 1; opacity: 1; }
+
+  .guzik .strz { display: inline-flex; overflow: hidden; transition: translate .3s cubic-bezier(.2, .8, .2, 1); }
+  .guzik:hover svg { translate: none; }
+  .guzik:hover .strz { translate: .1875rem 0; }
+  .guzik .strz svg { animation: wyslij 4.6s cubic-bezier(.5, 0, .2, 1) infinite; }
+  @keyframes wyslij {
+    0%, 70% { transform: translateX(0); }
+    80% { transform: translateX(170%); }
+    80.01% { transform: translateX(-170%); }
+    92%, 100% { transform: translateX(0); }
+  }
+
+  .zielona { position: relative; border-top: 0; background: #1f5a47; }
+  .zielona > .w { position: relative; z-index: 1; }
+  .zielona .tytul { color: #f6f0d8; }
+  .zielona .tytul > span:not(.sl) { color: rgba(246, 240, 216, .62); }
+  .zielona .pyt details, .zielona .wizyt {
+    background: #fbf8ee; border-color: transparent;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .25), 0 .875rem 1.625rem -.75rem rgba(0, 0, 0, .5);
+  }
+  .tlo { position: absolute; inset: 0; overflow: hidden; }
+  .tlo > * { position: absolute; }
+  .mata { inset: 0; background: url(zasoby/mata.jpg) center / cover; filter: saturate(1.05) brightness(1.02); }
+  .zaluzje {
+    inset: -25%; mix-blend-mode: multiply; filter: blur(.4375rem);
+    background: repeating-linear-gradient(102deg, rgba(3, 24, 34, .5) 0, rgba(3, 24, 34, .5) 8vw, rgba(3, 24, 34, 0) 12vw, rgba(3, 24, 34, 0) 22vw, rgba(3, 24, 34, .5) 26vw);
+    animation: kolysz 16s ease-in-out infinite alternate;
+  }
+  .rama {
+    inset: -25%; mix-blend-mode: multiply; filter: blur(.5625rem);
+    background: linear-gradient(12deg, transparent 47%, rgba(3, 24, 34, .6) 48.5%, rgba(3, 24, 34, .6) 51%, transparent 52.5%);
+    animation: kolysz 16s ease-in-out infinite alternate;
+  }
+  .winieta { inset: 0; background: radial-gradient(120% 90% at 30% 20%, rgba(255, 236, 170, .16), transparent 55%), radial-gradient(130% 110% at 50% 50%, transparent 60%, rgba(0, 14, 20, .34)); }
+  @keyframes kolysz { from { transform: translate3d(-1.2vw, 0, 0); } to { transform: translate3d(1.2vw, .4vw, 0); } }
+  .ptak { left: 0; top: 0; width: clamp(5.625rem, 11vw, 10.625rem); fill: rgba(2, 18, 26, .6); filter: blur(.3125rem); mix-blend-mode: multiply; opacity: 0; }
+  .ptak .sk { transform-origin: 3.75rem 1.875rem; animation: mach .26s ease-in-out infinite alternate; }
+  .ptak.p1 { animation: lot1 19s linear 4s infinite; }
+  .ptak.p2 { width: clamp(3.75rem, 7vw, 6.875rem); animation: lot2 31s linear 13s infinite; }
+  @keyframes mach { from { transform: scaleY(1); } to { transform: scaleY(-.55); } }
+  @keyframes lot1 {
+    0% { transform: translate(-20vw, 34vh) rotate(-8deg); opacity: 1; }
+    13% { transform: translate(115vw, 6vh) rotate(-8deg); opacity: 1; }
+    13.01%, 100% { transform: translate(115vw, 6vh); opacity: 0; }
+  }
+  @keyframes lot2 {
+    0% { transform: translate(115vw, 62vh) scaleX(-1) rotate(-6deg); opacity: 1; }
+    9% { transform: translate(-20vw, 40vh) scaleX(-1) rotate(-6deg); opacity: 1; }
+    9.01%, 100% { transform: translate(-20vw, 40vh); opacity: 0; }
+  }
+
+
+  /* loga marek: szare sylwetki, kolor po najechaniu */
+  .marki li { display: flex; align-items: center; }
+  .marki li img { display: block; width: auto; filter: brightness(0); opacity: .45; transition: opacity .25s, filter .25s; }
+  .marki li img.kol { filter: grayscale(1); opacity: .75; }
+  .marki .dla, .marki .dla b { color: var(--tekst); font-weight: 600; }
+  .marki li:hover img { opacity: 1; }
+  .marki li.pyszne { transition: color .25s; cursor: inherit; }
+  .marki li.pyszne:hover { color: #ff8000; }
+  .marki li:hover img:not(.mono) { filter: none; }
+
+
+  /* ═════════ Projekty: okładki i okno z filmami ═════════ */
+  .karta .foto { background-size: cover; background-position: center; }
+  .karta.zdj { color: #fff; }
+  .karta.zdj::after { content: ""; position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgba(0, 0, 0, .62)); pointer-events: none; }
+  .karta.zdj .podpis { z-index: 1; }
+  .karta.zdj .rodzaj { color: var(--tekst); }
+  .karta .ile { font-size: .875rem; font-weight: 600; white-space: nowrap; opacity: .8; }
+
+  .pokno-tlo {
+    position: fixed; inset: 0; z-index: 40; background: rgba(10, 10, 12, .5);
+    -webkit-backdrop-filter: blur(.625rem); backdrop-filter: blur(.625rem);
+    opacity: 0; pointer-events: none; transition: opacity .45s;
+  }
+  .pokno-tlo.widac { opacity: 1; pointer-events: auto; }
+  .pokno {
+    position: fixed; z-index: 41; left: 50%; top: 50%; translate: -50% -50%;
+    width: min(67.5rem, calc(100vw - 1.75rem)); height: min(88svh, 56.25rem);
+    background: var(--tlo); color: var(--tekst); border-radius: 1.75rem;
+    overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    padding: clamp(1.375rem, 3.6vw, 3.25rem); visibility: hidden; will-change: transform;
+    box-shadow: 0 1.875rem 5rem -1.25rem rgba(0, 0, 0, .5);
+  }
+  .pokno.widac { visibility: visible; }
+  .pokno .zamknij {
+    position: sticky; top: 0; float: right; z-index: 2; appearance: none; border: 0; cursor: pointer;
+    width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--plyta); color: var(--tekst);
+    display: grid; place-items: center; transition: scale .12s ease-out, background .2s;
+  }
+  .pokno .zamknij:hover { background: #dedee2; }
+  .pokno .zamknij:active { scale: .92; }
+  .pokno .zamknij svg { width: .875rem; height: .875rem; }
+  .pokno .et { font-size: .875rem; color: var(--szary); letter-spacing: 0; }
+  .pokno h2 { margin-top: .375rem; font-size: clamp(2.125rem, 5vw, 4.25rem); font-weight: 600; line-height: 1; letter-spacing: -.05em; }
+  .pokno .op { margin-top: clamp(1.125rem, 3vh, 1.875rem); max-width: 36em; display: grid; gap: .9em; font-size: 1.125rem; line-height: 1.5; color: var(--srodek); }
+  .pokno .op p:last-child { color: var(--tekst); font-weight: 600; }
+  .pokno h3 { margin: clamp(1.75rem, 5vh, 3rem) 0 .875rem; padding-bottom: .75rem; border-bottom: 1px solid var(--tekst); font-size: .875rem; font-weight: 500; color: var(--srodek); letter-spacing: 0; }
+  .po-projektach { margin-top: clamp(1.75rem, 5vh, 3.25rem); font-size: clamp(1.875rem, 4.2vw, 3.625rem); font-weight: 600; letter-spacing: -.05em; line-height: 1; color: var(--tekst); }
+  .pokno .i-wiecej { margin-top: clamp(2rem, 6vh, 3.75rem); padding-top: 1.375rem; border-top: 1px solid var(--linia); font-size: clamp(1.625rem, 3.4vw, 2.75rem); font-weight: 600; letter-spacing: -.045em; line-height: 1; color: var(--szary); }
+  .filmy { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.625rem), 1fr)); gap: 1.375rem .875rem; }
+  .film-k { display: block; animation: wjazd .6s cubic-bezier(.2, .85, .25, 1) both; animation-delay: calc(var(--n) * 45ms + 180ms); }
+  @keyframes wjazd { from { opacity: 0; transform: translateY(1.625rem) scale(.96); } }
+  .film-k .kadr { position: relative; aspect-ratio: 16 / 9; border-radius: 1rem; overflow: hidden; background: #1c1c1e; color: #fff; display: grid; place-items: center; }
+  .film-k img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale .5s cubic-bezier(.2, .8, .2, 1); }
+  .film-k:hover img { scale: 1.05; }
+  .film-k .graj { position: relative; width: 3rem; height: 3rem; border-radius: 50%; background: rgba(255, 255, 255, .92); display: grid; place-items: center; transition: scale .25s cubic-bezier(.3, 1.5, .5, 1); }
+  .film-k:hover .graj { scale: 1.12; }
+  .film-k:active .kadr { scale: .98; }
+  .film-k .graj svg { width: 1rem; height: 1rem; margin-left: .1875rem; fill: #1c1c1e; }
+  .film-k .skad { position: absolute; left: .75rem; bottom: .625rem; font-size: .75rem; letter-spacing: 0; color: rgba(255, 255, 255, .7); }
+  .film-k b { display: block; margin-top: .625rem; font-size: 1rem; font-weight: 600; letter-spacing: -.025em; line-height: 1.25; }
+  .film-k small { color: var(--szary); font-size: .8125rem; letter-spacing: 0; }
+
+
+  .karta .foto video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .stos .foto { overflow: hidden; background-size: cover; }
+  .stos .foto video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .stos .foto.pion.foto { inset: 0 27%; }
+  .stos .kto { position: absolute; left: .75rem; top: .75rem; z-index: 1; background: #fff; color: var(--tekst); border-radius: 62.4375rem; padding: .375rem .75rem; font-size: .8125rem; font-weight: 600; letter-spacing: 0; line-height: 1; pointer-events: none; }
+  /* ═════════ Żywe filmy zamiast miniatur ═════════ */
+  .film-k .kadr, .karta .foto { container-type: size; }
+  .zywe {
+    position: absolute; left: 50%; top: 50%; translate: -50% -50%; border: 0; pointer-events: none;
+    width: max(100cqw, 177.78cqh); height: max(100cqh, 56.25cqw);
+    opacity: 0; transition: opacity .9s;
+  }
+  .zywe.gra { opacity: 1; }
+  .film-k .graj { transition: opacity .4s, scale .25s cubic-bezier(.3, 1.5, .5, 1); }
+  .kadr:has(.zywe.gra) .graj { opacity: 0; }
+  .filmy.pion { grid-template-columns: repeat(auto-fill, minmax(min(100%, 13.125rem), 1fr)); }
+  .film-k .kadr.ig { aspect-ratio: 4 / 5; background: #fff; }
+  .kadr.ig iframe { position: absolute; left: -1px; top: -3.4375rem; width: calc(100% + 2px); height: calc(100% + 15rem); border: 0; }
+
+
+  /* ═════════ Okno kontaktu ═════════ */
+  .pokno.male { width: min(36.25rem, calc(100vw - 1.75rem)); height: auto; max-height: 90svh; }
+  .formularz { margin-top: clamp(1.25rem, 3vh, 1.875rem); display: grid; gap: 1rem; }
+  .formularz label { display: grid; gap: .4375rem; font-size: .875rem; font-weight: 600; letter-spacing: -.01em; }
+  .formularz input, .formularz textarea {
+    font: inherit; font-size: 1.0625rem; font-weight: 400; letter-spacing: -.01em; color: var(--tekst);
+    background: #fff; border: 1px solid var(--linia); border-radius: .875rem; padding: .8125rem .9375rem; width: 100%;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .formularz textarea { min-height: 8.25rem; resize: vertical; line-height: 1.4; }
+  .formularz input:focus, .formularz textarea:focus { outline: none; border-color: var(--tekst); box-shadow: 0 0 0 .1875rem rgba(28, 28, 30, .12); }
+  .formularz .zle { border-color: #c8321e; box-shadow: 0 0 0 .1875rem rgba(200, 50, 30, .14); }
+  .formularz .blad { min-height: 1.2em; margin: -.375rem 0 0; font-size: .875rem; color: #c8321e; letter-spacing: 0; }
+  .formularz .rzad { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.125rem; }
+  .formularz button.guzik { appearance: none; border: 0; cursor: pointer; font: inherit; font-size: 1rem; font-weight: 600; }
+  .kopiuj { appearance: none; border: 0; background: none; cursor: pointer; padding: .375rem 0; font: inherit; font-size: .9375rem; font-weight: 600; color: var(--tekst); border-bottom: 1px solid var(--tekst); transition: opacity .12s; }
+  .kopiuj:active { opacity: .5; }
+  .pokno .adres { margin-top: 1.125rem; padding-top: 1rem; border-top: 1px solid var(--linia); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; font-size: .9375rem; color: var(--srodek); }
+  .pokno .adres b { color: var(--tekst); font-weight: 600; user-select: all; -webkit-user-select: all; }
+  .pokno .potw { margin-top: 1rem; font-size: 1.125rem; line-height: 1.45; color: var(--srodek); max-width: 26em; }
+
+
+  /* karty projektów: przyciemniony film i nazwa na środku */
+  .karta .rodzaj, .karta .ile { display: none; }
+  .karta.zdj::after { inset: 0; background: rgba(0, 0, 0, .58); transition: background .3s; }
+  .karta.zdj:hover::after { background: rgba(0, 0, 0, .36); }
+  .karta .podpis { inset: 0; display: grid; place-items: center; place-content: center; padding: 1.25rem; text-align: center; }
+  .karta h3 { font-size: clamp(1.625rem, 3.3vw, 3.125rem); }
+  .karta.mala h3 { font-size: clamp(1.375rem, 2.5vw, 2.25rem); }
+
+
+  /* >>> ZIELONA MATA WYŁĄCZONA NA CHWILĘ: usuń ten blok, żeby wróciła <<< */
+  .zielona { background: none; border-top: 1px solid var(--linia); }
+  .zielona .tlo { display: none; }
+  .zielona .tytul { color: var(--tekst); }
+  .zielona .tytul > span:not(.sl) { color: var(--szary); }
+  .zielona .pyt details, .zielona .wizyt { background: #fff; border-color: var(--linia); box-shadow: none; }
+  /* >>> KONIEC BLOKU <<< */
+
+
+  /* ═════════ DOPRACOWANIE ═════════ */
+  body { text-rendering: optimizeLegibility; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Segoe UI Variable Display", "Segoe UI", Helvetica, Arial, sans-serif; }
+  ::selection { background: #1c1c1e; color: #fff; }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  a:focus-visible, button:focus-visible, summary:focus-visible, .um:focus-visible { outline: 2px solid currentColor; outline-offset: .1875rem; }
+
+  /* hasła nagłówka stoją na wspólnej dolnej linii, więc pod krótkim nie robi się dziura */
+  .start h1.zmienny .wer { align-self: end; }
+
+  /* aktualna sekcja w menu */
+  .gora nav a { transition: color .25s; }
+  .gora nav a.tu { color: var(--tekst); }
+
+  /* głębia: filmy leżą nad stroną, a nie są w nią wklejone */
+  .stos .foto { box-shadow: 0 1px 1px rgba(0, 0, 0, .08), 0 1.125rem 2.5rem -1.125rem rgba(0, 0, 0, .45), 0 2.75rem 5rem -2.75rem rgba(0, 0, 0, .4); }
+  .stos .foto::after, .karta::before { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .13); pointer-events: none; }
+  .stos .kto { box-shadow: 0 2px .5rem -2px rgba(0, 0, 0, .35); }
+  .karta h3 { transition: scale .5s cubic-bezier(.2, .8, .2, 1); }
+  .karta:hover h3 { scale: 1.04; }
+  .guzik { box-shadow: 0 .75rem 1.625rem -.875rem rgba(0, 0, 0, .6); }
+  .pyt details { transition: border-color .2s, box-shadow .35s; }
+  .pyt details:hover { border-color: #cdcdd2; }
+  .pyt details[open] { box-shadow: 0 1rem 2.25rem -1.5rem rgba(0, 0, 0, .4); }
+  .wizyt { box-shadow: 0 1.875rem 4.375rem -2.75rem rgba(0, 0, 0, .4); }
+
+  /* miejsca na Twoje zdjęcia: pokazują plik, gdy tylko pojawi się w zasoby/foto */
+  .portret { background: #1d1d20; font-size: 0; position: relative; overflow: hidden; isolation: isolate; }
+  /* portret z dwóch warstw: tło z tyłu, postać z przodu */
+  .portret .pw { position: absolute; inset: -9%; background: center 22% / cover no-repeat; will-change: transform; }
+  .portret .pw-tlo { background-image: url(zasoby/foto/portret-tlo.jpg); }
+  .portret .pw-postac { background-image: url(zasoby/foto/portret-postac.webp); }
+  .portret.galezie .pw-tlo { filter: url(#galezie); }
+  .wizyt .foto { background: #ececee url(zasoby/foto/twarz.jpg) center / cover; font-size: 0; }
+  .wizyt .foto::after { content: none; }
+  .wizyt .foto.jest::after { content: none; }
+  .nadpis { margin-bottom: .875rem; font-size: .875rem; letter-spacing: 0; color: rgba(245, 245, 247, .5); }
+
+
+  /* wielki podpis „Tadek” na dole stopki: ucięty dołem i rozmywający się w dół */
+  .stopka { overflow: hidden; padding-bottom: 0; }
+  .podpis-tadek {
+    position: relative; margin-top: clamp(1.75rem, 5vh, 3.5rem);
+    font-size: 30vw; height: .62em; line-height: 1;
+    overflow: hidden; overflow: visible clip;                   /* tnie tylko dół liter; rozmycie po bokach wygasa łagodnie */
+    font-weight: 700; letter-spacing: -.065em; color: var(--tekst);
+    white-space: nowrap; user-select: none; -webkit-user-select: none; pointer-events: none;
+  }
+  .podpis-tadek span { display: inline-block; margin-left: -.045em; padding-top: .02em;
+    -webkit-mask-image: linear-gradient(#000 45%, rgba(0, 0, 0, .55) 85%, rgba(0, 0, 0, .25));
+            mask-image: linear-gradient(#000 45%, rgba(0, 0, 0, .55) 85%, rgba(0, 0, 0, .25)); }
+  .podpis-tadek::after {
+    content: ""; position: absolute; left: -6%; right: -6%; top: 30%; bottom: 0;
+    -webkit-backdrop-filter: blur(.035em); backdrop-filter: blur(.035em);
+    -webkit-mask-image: linear-gradient(transparent, #000 75%); mask-image: linear-gradient(transparent, #000 75%);
+  }
+
+
+  /* poświata na nagłówku: jasna, rozciągnięta w bok smuga podąża za kursorem po literach */
+  .start h1 .wer .sl {
+    --kol: var(--tekst); --blask: #1f6bff; --ga: 0;
+    background: radial-gradient(ellipse 20rem 6.875rem at var(--gx, -62.4375rem) var(--gy, -62.4375rem),
+      color-mix(in srgb, var(--blask) calc(var(--ga) * 100%), var(--kol)) 0%, var(--kol) 78%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .start h1 .wer > span:not(.sl) .sl { --kol: var(--szary); --blask: #6ea8ff; }
+
+
+  /* żółta poświata za kursorem na wybranych napisach */
+  .blask {
+    background: radial-gradient(ellipse 20rem 6.875rem at var(--gx, -62.4375rem) var(--gy, -62.4375rem),
+      color-mix(in srgb, var(--blask) calc(var(--ga, 0) * 100%), var(--kol)) 0%, var(--kol) 78%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .podpis-tadek span.blask { background-size: auto; }
+
+
+  /* przyciski „Wyślij mi wiadomość”: powiększenie, przyciąganie do kursora, żółty błysk i strzałka, która wysyła */
+  .guzik {
+    position: relative; overflow: hidden; isolation: isolate;
+    translate: var(--bx, 0px) var(--by, 0px);
+    transition: scale .5s cubic-bezier(.3, 1.6, .5, 1), translate .45s cubic-bezier(.2, .8, .2, 1), box-shadow .35s, background .2s;
+  }
+  .guzik::before {
+    content: ""; position: absolute; inset: -2px; z-index: -1; pointer-events: none;
+    background: linear-gradient(105deg, transparent 28%, rgba(110, 168, 255, .55) 46%, rgba(222, 236, 255, .5) 52%, transparent 70%);
+    transform: translateX(-130%);
+  }
+  .guzik:hover { scale: 1.07; box-shadow: 0 1.375rem 2.5rem -1.125rem rgba(0, 0, 0, .65), 0 0 0 1px rgba(31, 107, 255, .35); }
+  .guzik:hover::before { transform: translateX(130%); transition: transform .9s cubic-bezier(.2, .8, .2, 1); }
+  .guzik:active { scale: 1.01; transition-duration: .12s; }
+  .guzik:hover .strz { translate: 0 0; }
+  .guzik:hover .strz svg { animation: wyslijTeraz .75s cubic-bezier(.5, 0, .2, 1) both; }
+  @keyframes wyslijTeraz {
+    0% { transform: translateX(0); }
+    42% { transform: translateX(180%) translateY(-40%) rotate(-18deg); opacity: 1; }
+    42.01% { transform: translateX(-180%); opacity: 0; }
+    60% { opacity: 1; }
+    100% { transform: translateX(0); }
+  }
+
+
+  /* sprężyste odbicie na dole strony (własne, więc wyłączamy systemowe) */
+  html, body { overscroll-behavior-y: none; }
+  .odbij { translate: 0 calc(var(--odbicie, 0) * -1px); }
+
+
+  /* ramka pod poświatę sięga poza ogonki liter (y, ę, j, g, ą) i akcenty, żeby nic nie było ucinane */
+  .start h1 .wer .sl, .blask { padding: .14em .06em .26em; margin: -.14em -.06em -.26em; }
+  .podpis-tadek span.blask { padding: .02em 0 0; margin: 0; }
+
+
+  /* przy odbiciu na dole cały podpis „Tadek” (z rozmyciem) zastępuje kopia, która rośnie w dół
+     o tyle, ile strona zjechała — jedna warstwa, więc nie ma linii łączenia */
+  .tadek-odslona { position: fixed; left: 0; top: 0; z-index: 6; pointer-events: none; visibility: hidden; }
+  .tadek-odslona .podpis-tadek { margin: 0; height: calc(var(--h0, 0) * 1px + var(--odbicie, 0) * 1px); }
+  .tadek-odslona .podpis-tadek::after {
+    top: calc(var(--h0, 0) * .3px);
+    -webkit-mask-image: linear-gradient(transparent, #000 calc(var(--h0, 0) * .525px));
+            mask-image: linear-gradient(transparent, #000 calc(var(--h0, 0) * .525px));
+  }
+  html.ciagnie .tadek-odslona { visibility: visible; }
+  html.ciagnie .podpis-oryg { visibility: hidden; }
+
+
+  /* menu i linki w stopce: litery przewijają się falą po najechaniu */
+  .rolka { position: relative; display: inline-block; overflow: hidden; vertical-align: bottom; line-height: 1.4; }
+  .rolka .r1, .rolka .r2 { display: block; white-space: pre; }
+  .rolka .r2 { position: absolute; left: 0; top: 100%; }
+  .rolka .lt { display: inline-block; transition: transform .6s cubic-bezier(.2, .85, .2, 1); transition-delay: calc(var(--i) * 13ms); }
+  @media (hover: hover) { a:hover > .rolka .lt { transform: translateY(-100%); } }
+  a:focus-visible > .rolka .lt { transform: translateY(-100%); }
+
+  /* menu: miękka „pigułka” jedzie za kursorem; bez kursora spoczywa na sekcji, w której jesteś */
+  .gora nav { position: relative; gap: 2px; margin-right: -.75rem; }
+  .gora nav a { position: relative; z-index: 1; padding: .4375rem .75rem; border-radius: 62.4375rem; }
+  .gora nav a:active > .rolka { scale: .96; }
+  .pigulka {
+    position: absolute; left: 0; top: 0; border-radius: 62.4375rem; background: rgba(0, 0, 0, .045);
+    opacity: 0; pointer-events: none;
+    transition: translate .5s cubic-bezier(.2, .9, .25, 1), width .5s cubic-bezier(.2, .9, .25, 1), opacity .3s, background .3s;
+  }
+  .pigulka.jest { opacity: 1; }
+  .pigulka.nad { background: rgba(0, 0, 0, .075); }
+
+  /* YouTube i Instagram w stopce: druga warstwa liter w kolorze marki + strzałka „wyjdź” */
+  .stopka .dol a { position: relative; display: inline-block; }
+  .stopka .dol a[href*="youtube"] { --marka: #ff0033; }
+  .stopka .dol a[href*="instagram"] { --marka: #e1306c; }
+  .stopka .dol a .r2 { color: var(--marka); }
+  .stopka .dol .ukos {
+    position: absolute; right: -1em; top: .1em; width: .78em; height: .78em; color: var(--marka);
+    opacity: 0; translate: -.3125rem .3125rem; transition: opacity .3s, translate .5s cubic-bezier(.2, .85, .2, 1);
+  }
+  @media (hover: hover) { .stopka .dol a:hover .ukos { opacity: 1; translate: 0 0; transition-delay: .08s; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rolka .lt, .pigulka, .stopka .dol .ukos { transition: none !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    [data-anim], .sl, .start .srodek > div:first-child, .stos { opacity: 1 !important; transform: none !important; filter: none !important; clip-path: none !important; }
+    .gora { transition: none; }
+    .guzik, .guzik::before { transition: none !important; translate: none !important; }
+    .guzik:hover .strz svg { animation: none !important; }
+    .film-k { animation: none !important; }
+    .zaluzje, .rama, .ptak, .ptak .sk, .guzik .strz svg { animation: none !important; }
+    .portret, .wiersz, .scena-omnie .sl { opacity: 1 !important; transform: none !important; }
+    .scena-omnie { height: auto; clip-path: none !important; }
+    .przypiete { position: static; height: auto; padding: 5rem 0; }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .gora { background: var(--tlo); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  }
+
+  @media (max-width: 820px) {
+    .marki .w.w { flex-direction: column; align-items: flex-start; gap: 1rem; padding-top: 1.5rem; padding-bottom: 1.625rem; }
+    .okno { width: 100%; flex: none; }
+    .uklad-sc { grid-template-columns: 1fr; gap: 1.25rem; }
+    .portret { aspect-ratio: auto; height: 24svh; width: 58%; }
+    .scena-omnie .tytul { font-size: clamp(1.625rem, 7.4vw, 2.5rem); }
+    .wiersze-sc { font-size: .9375rem; gap: .55em; }
+    .marki .w { flex-wrap: wrap; }
+    .faq { grid-template-columns: 1fr; }
+    .wizyt { position: static; margin-top: 0; }
+    .pyt .odp { padding: 0 1.25rem 1.125rem 1.25rem; }
+    .omnie .foto { position: static; }
+    .pytania li { grid-template-columns: 1fr; }
+    .szerokie > .foto { aspect-ratio: 4 / 5; }
+    .wybor { max-width: calc(100vw - 1rem); overflow-x: auto; }
+    .polowy { grid-template-columns: 1fr; gap: 2.25rem; }
+    .plus { display: none; }
+    .podpis-o .linki { margin-left: 0; width: 100%; }
+    .style { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dwa, .omnie { grid-template-columns: 1fr; }
+    .omnie .foto { max-width: 22.5rem; }
+    .start .srodek, .p3 .uklad { grid-template-columns: 1fr; }
+    .stos { max-width: 26.25rem; }
+    .siatka { grid-template-columns: 1fr; }
+    .karta.duza, .karta.mala { grid-column: auto; aspect-ratio: 4 / 3; }
+    .filary { grid-template-columns: 1fr; gap: 1.75rem; }
+    .wybor button { padding: .5rem .625rem; }
+  }
+  /* na telefonie w pasku zostaje tylko „Kontakt”; tablet mieści całe menu */
+  @media (max-width: 560px) {
+    .nawigacja nav a:not(.zostaje) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gora" id="gora">
+  <header class="nawigacja w">
+    <a class="imie" href="#">Tadeusz Paprocki</a>
+    <nav><a href="#druga">Projekty</a><a href="#o-mnie">O mnie</a><a href="#pytania">Pytania</a><a class="zostaje" href="#kontakt">Kontakt</a></nav>
+  </header>
+</div>
+
+<section class="start">
+  <div class="srodek w">
+    <div>
+      <h1 class="zmienny" data-slowa data-bramka="120" data-resp="1.2"><span class="wer"><span>Tadeusz</span>Paprocki</span><span class="wer pod"><span>Opowiadam</span>historie filmem</span><span class="wer pod"><span>Historie,</span>które się ogląda do&nbsp;końca</span><span class="wer pod"><span>Filmy, które nie wyglądają</span>jak wszystkie inne</span></h1>
+      <p class="fach" data-slowa data-bramka="520" data-resp="1"><span class="um" tabindex="0" data-e="🎥">Kamera</span>, <span class="um" tabindex="0" data-e="💻">montaż</span>, <span class="um" tabindex="0" data-e="📖">storytelling</span>, <span class="um" tabindex="0" data-e="✨">animacje</span>, <span class="um" tabindex="0" data-e="⌨️">kod</span></p>
+      <div class="opis">
+        <p data-slowa data-bramka="640" data-resp="1.1">Cześć, jestem <b>Tadek</b>. Filmowiec i&nbsp;programista.</p>
+        <p data-slowa data-bramka="740" data-resp="1.1">Stworzyłem <b>setki filmów i&nbsp;rolek</b>, które zebrały <b>dziesiątki milionów wyświetleń</b>.</p>
+        <p data-slowa data-bramka="840" data-resp="1.1">Wykorzystuję (i&nbsp;tworzę) wszystkie nowoczesne narzędzia, w&nbsp;tym AI.</p>
+      </div>
+      <a class="guzik" href="#kontakt" data-anim="w" data-bramka="960" data-resp=".7">Wyślij mi wiadomość
+        <span class="strz"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+      </a>
+    </div>
+    <div class="stos" aria-hidden="true">
+      <div class="foto f1 pion"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/allegro.jpg" src="zasoby/wideo/allegro.mp4"></video><span class="kto">Allegro</span></div>
+      <div class="foto f2"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/pzps.jpg" src="zasoby/wideo/pzps.mp4"></video><span class="kto">PZS</span></div>
+      <div class="foto f3 pion"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/red-bull.jpg" src="zasoby/wideo/red-bull.mp4"></video><span class="kto">Red Bull</span></div>
+      <div class="foto f4"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/ibo.jpg" src="zasoby/wideo/ibo.mp4"></video><span class="kto">IBO</span></div>
+      <div class="foto f5"><video muted loop playsinline autoplay preload="metadata" poster="zasoby/wideo/moje.jpg" src="zasoby/wideo/moje.mp4"></video><span class="kto">Moje filmy</span></div>
+    </div>
+  </div>
+  <div class="marki" data-anim="w" data-bramka="1100" data-resp=".7">
+    <div class="w">
+      <span class="dla">Tworzyłem <b>dla</b></span>
+      <div class="okno"><div class="tasma-marek" id="tasmaMarek"><ul><li><img src="zasoby/loga/red-bull.svg" alt="Red Bull" style="height:1.375rem"></li><li><img src="zasoby/loga/pzps.svg" alt="Polski Związek Siatkówki" style="height:3.375rem"></li><li class="pyszne">Pyszne.pl</li><li><img src="zasoby/loga/dambat.png" alt="Dambat" style="height:1.5625rem"></li><li class="wiecej">i wiele, wiele więcej</li><li><img src="zasoby/loga/pasha-gaming-camp.png" alt="Pasha Gaming Camp" style="height:2.25rem" class="kol"></li><li><img src="zasoby/loga/allegro.svg" alt="Allegro" style="height:1.875rem"></li></ul></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ 1. PROJEKTY ═════════ -->
+<section class="plansza p1 w" id="druga" style="display:block">
+  <div class="glowka">
+    <h2 class="tytul" data-slowa>Moje projekty</h2>
+    
+  </div>
+  <div class="siatka">
+    <a data-anim="karta" data-zasieg=".55" data-od="0" class="karta duza zdj" href="#" data-projekt="redbull"><div class="foto" style="background-image:url(zasoby/wideo/red-bull.jpg)"><video muted loop playsinline preload="none" src="zasoby/wideo/red-bull.mp4"></video></div><span class="rodzaj">Klient</span><div class="podpis"><h3>Red Bull</h3><span class="ile">6 filmów</span></div></a>
+    <a data-anim="karta" data-zasieg=".55" data-od=".06" class="karta duza zdj" href="#" data-start="410" data-projekt="pzps"><div class="foto" style="background-image:url(zasoby/wideo/pzps.jpg)"><video muted loop playsinline preload="none" src="zasoby/wideo/pzps.mp4"></video></div><span class="rodzaj">Klient</span><div class="podpis"><h3>Polski Związek Siatkówki</h3><span class="ile">5 filmów</span></div></a>
+    <a data-anim="karta" data-zasieg=".55" data-od="0" class="karta mala zdj" href="#" data-projekt="allegro"><div class="foto" style="background-image:url(zasoby/wideo/allegro.jpg)"><video muted loop playsinline preload="none" src="zasoby/wideo/allegro.mp4"></video></div><span class="rodzaj">Klient</span><div class="podpis"><h3>Allegro</h3><span class="ile">2 filmy</span></div></a>
+    <a data-anim="karta" data-zasieg=".55" data-od=".05" class="karta mala zdj" href="#" data-start="1" data-projekt="ibo"><div class="foto" style="background-image:url(zasoby/wideo/ibo.jpg)"><video muted loop playsinline preload="none" src="zasoby/wideo/ibo.mp4"></video></div><span class="rodzaj">Klient</span><div class="podpis"><h3>IBO</h3><span class="ile">5 filmów</span></div></a>
+    <a data-anim="karta" data-zasieg=".55" data-od=".1" class="karta mala zdj" href="#" data-projekt="moje"><div class="foto" style="background-image:url(zasoby/wideo/moje.jpg)"><video muted loop playsinline preload="none" src="zasoby/wideo/moje.mp4"></video></div><span class="rodzaj">Moje</span><div class="podpis"><h3>Moje filmy</h3><span class="ile">5 filmów</span></div></a>
+  </div>
+  <p class="po-projektach" data-slowa data-zasieg=".3">I wiele, wiele więcej</p>
+</section>
+
+<!-- ═════════ O MNIE: PRZYPIĘTA SCENA ═════════ -->
+<section class="scena-omnie" id="o-mnie" data-scena>
+  <div class="przypiete"><div class="w uklad-sc">
+    <div class="portret foto" id="portret"><div class="pw pw-tlo"></div><div class="pw pw-postac"></div></div>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="galezie" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.009 0.018" numOctaves="2" seed="4" result="szum"><animate attributeName="baseFrequency" dur="22s" values="0.009 0.018;0.011 0.015;0.008 0.019;0.009 0.018" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="szum" scale="5" xChannelSelector="R" yChannelSelector="G"/></filter></svg>
+    <div>
+      <p class="nadpis">O mnie</p>
+      <h2 class="tytul" data-slowa data-anim="scena">W czasach AI slopu historia jest ważniejsza niż kiedykolwiek.</h2>
+      <div class="wiersze-sc">
+        <p class="wiersz">Dzisiaj wszyscy idą w&nbsp;ilość, a&nbsp;nie w&nbsp;jakość. Filmy wszystkich wyglądają dokładnie tak samo, a&nbsp;odbiorcy są tym niezwykle zmęczeni.</p>
+        <p class="wiersz">A przecież technologia daje największe możliwości w&nbsp;historii.</p>
+        <p class="wiersz">Nikt nigdy nie mógł osiągnąć tak dobrych efektów tak szybko.</p>
+        <p class="wiersz"><b>Dzisiaj jeden człowiek jest w&nbsp;stanie zrobić pracę całej ekipy filmowej sprzed 15&nbsp;lat.</b></p>
+        <p class="wiersz"><b>I tym człowiekiem, nieskromnie mówiąc, jestem ja ;)</b></p>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ═════════ PYTANIA I ODPOWIEDZI ═════════ -->
+<section class="plansza q zielona" id="pytania">
+  <div class="tlo" aria-hidden="true">
+    <div class="mata"></div><div class="zaluzje"></div><div class="rama"></div>
+    <svg class="ptak p1" viewBox="0 0 120 60"><path class="sk" d="M60 30C45 10 25 6 4 14C24 16 40 24 56 36Z"/><path class="sk" d="M60 30C75 10 95 6 116 14C96 16 80 24 64 36Z"/><path d="M46 32C54 26 70 26 82 31C72 37 56 38 46 32Z"/></svg>
+    <svg class="ptak p2" viewBox="0 0 120 60"><path class="sk" d="M60 30C45 10 25 6 4 14C24 16 40 24 56 36Z"/><path class="sk" d="M60 30C75 10 95 6 116 14C96 16 80 24 64 36Z"/><path d="M46 32C54 26 70 26 82 31C72 37 56 38 46 32Z"/></svg>
+    <div class="winieta"></div>
+  </div><div class="w faq">
+  <div>
+    <h2 class="tytul" data-slowa data-zasieg=".4">Najczęściej <span>zadawane pytania</span></h2>
+    <div class="pyt">
+      <details data-anim="w" open>
+        <summary><small>01</small>Jakie projekty bierzesz?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">Moje ulubione to filmy na YouTube. Bardzo dobry jestem też w&nbsp;krótkim contencie. Specjalizuję się w&nbsp;storytellingu i&nbsp;montażu, więc wszystko, co z&nbsp;tym związane, to mój świat.</p>
+      </details>
+      <details data-anim="w">
+        <summary><small>02</small>Robisz wszystko sam, czy masz ekipę?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">Działam i&nbsp;tak, i&nbsp;tak. Jeżeli jakiś projekt wymaga większej liczby osób, znam dziesiątki zaufanych ludzi z&nbsp;branży, którzy zawsze chętnie pomogą.</p>
+      </details>
+      <details data-anim="w">
+        <summary><small>03</small>Jak używasz AI w&nbsp;filmach?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">AI używam głównie do usprawniania monotonnej pracy, która zajmuje godziny, tak by zrobić ją w&nbsp;minuty. Oraz do animacji, w&nbsp;czym uważam, że jestem naprawdę niezły. Od jakiegoś czasu piszę również swój silnik animacji „Dotori”, który pozwala tworzyć animacje, które całkowicie nie wyglądają jak animacje AI.</p>
+      </details>
+      <details data-anim="w">
+        <summary><small>04</small>Odtworzysz styl, który gdzieś widziałem?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">W większości przypadków tak. Wiele czasu spędziłem w&nbsp;aplikacjach do animacji i&nbsp;dobrze wiem, co z&nbsp;czym się je. A&nbsp;dzięki mojemu silnikowi animacji jestem w&nbsp;stanie odtworzyć (prawdopodobnie) każdy styl. Jeśli chodzi o&nbsp;montaż, również potrafię odtworzyć niemal każdy, jednak uważam, że mój styl montażu jest na tyle wyjątkowy, że warto oddać mi nad nim pieczę.</p>
+      </details>
+      <details data-anim="w">
+        <summary><small>05</small>Ile trwa typowy projekt?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">To bardzo zależy, ale lubię działać szybciej niż wolniej. Większość projektów kończę w&nbsp;czasie od tygodnia do 4&nbsp;tygodni. A&nbsp;jeżeli projekt jest potrzebny „na wczoraj”, mogę go zrobić nawet na wczoraj.</p>
+      </details>
+      <details data-anim="w">
+        <summary><small>06</small>Jak wygląda współpraca?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">Zaczynamy od krótkiej rozmowy o&nbsp;tym, co film ma osiągnąć i&nbsp;kto ma go obejrzeć. Potem piszę scenariusz i&nbsp;pokazuję, jak to będzie wyglądać. Po Twojej akceptacji kręcę, montuję i&nbsp;animuję. Na koniec dostajesz gotowy film i&nbsp;czas na poprawki.</p>
+      </details>
+      <details data-anim="w">
+        <summary><small>07</small>Ile to kosztuje? Bierzesz małe zlecenia?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">Projekty rozliczam indywidualnie, w&nbsp;zależności od złożoności i&nbsp;wielu innych czynników. Jestem raczej droższy niż tańszy, ale też bez przesady. Biorę małe zlecenia.</p>
+      </details>
+      <details data-anim="w">
+        <summary><small>08</small>Skąd pracujesz?<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg></summary>
+        <p class="odp">Mieszkam w&nbsp;Warszawie, ale mogę pracować wszędzie.</p>
+      </details>
+    </div>
+  </div>
+  <aside class="wizyt" id="kontakt" data-anim="szklo" data-kotwica="rodzic" data-zasieg=".4">
+    <div class="foto">foto</div>
+    <h3>Masz jeszcze pytanie? <b>Napisz do mnie!</b></h3>
+    <p>Opowiedz w&nbsp;dwóch zdaniach, co chcesz nakręcić. Odpiszę, jak bym to zrobił, ile to potrwa i&nbsp;ile plus minus będzie kosztować.</p>
+    <a class="guzik" href="#">Wyślij mi wiadomość
+      <span class="strz"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+    </a>
+  </aside>
+</div></section>
+
+<!-- ═════════ STOPKA ═════════ -->
+<footer class="stopka"><div class="w">
+  <h2 class="zmienny" data-co="2600" data-slowa data-zasieg=".35"><span class="wer">Zróbmy film.</span><span class="wer pod">Albo dwa.</span><span class="wer pod">Albo cały kanał.</span><span class="wer pod">Albo rolkę.</span><span class="wer pod">Albo kilka.</span></h2>
+  <a class="guzik" href="#" data-anim="w" data-od=".05">Wyślij mi wiadomość
+    <span class="strz"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+  </a>
+  <div class="dol">
+    <span>© 2026 Tadeusz Paprocki · Warszawa</span>
+    <span><a href="https://www.youtube.com/@ttadek" target="_blank" rel="noopener">YouTube</a><a href="https://www.instagram.com/stoke__tadek/" target="_blank" rel="noopener">Instagram</a></span>
+  </div>
+  <div class="podpis-tadek" aria-hidden="true"><span id="podpisTadek">Tadek</span></div>
+</div></footer>
+
+<script>
+(() => {
+  const SPOKOJ = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ogr = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  document.documentElement.classList.add('js');
+
+  // Sprężyna: „odpowiedz” w sekundach, tłumienie 1 = bez odbicia.
+  class Sprezyna {
+    constructor(x = 0, odpowiedz = 0.5, tlumienie = 1) { this.x = x; this.v = 0; this.cel = x; this.w = 2 * Math.PI / odpowiedz; this.z = tlumienie; }
+    krok(dt) {
+      if (!(dt > 0)) return;                                           // pierwsza klatka może mieć czas wstecz
+      if (dt > 0.1) { this.x = this.cel; this.v = 0; return; }           // karta w tle: bez dogrywania zaległych klatek
+      let n = Math.ceil(dt / 0.004); const h = dt / n;
+      while (n--) { this.v += (-2 * this.z * this.w * this.v - this.w * this.w * (this.x - this.cel)) * h; this.x += this.v * h; }
+      if (Math.abs(this.v) < 0.002 && Math.abs(this.x - this.cel) < 0.0005) { this.x = this.cel; this.v = 0; }
+    }
+    get stoi() { return this.x === this.cel && this.v === 0; }
+  }
+
+  // ── Nagłówki: każde słowo w osobnym spanie, żeby mogły wchodzić po kolei
+  document.querySelectorAll('[data-slowa]').forEach(el => {
+    let i = 0;
+    const idz = wezel => [...wezel.childNodes].forEach(c => {
+      if (c.nodeType === 1) return idz(c);
+      if (c.nodeType !== 3) return;
+      // przecinek/kropka tuż po słowie w tagu (np. „animacje</span>,”) dopisujemy do tego słowa —
+      // inaczej przeglądarka może złamać linię przed przecinkiem
+      const zn = c.textContent.match(/^[,.;:!?…)\]»”]+/), przed = c.previousSibling;
+      if (zn && przed && przed.nodeType === 1) {
+        const ost = przed.matches('.sl') ? przed : [...przed.querySelectorAll('.sl')].pop();
+        if (ost) {
+          const z = document.createElement('span'), cs = getComputedStyle(c.parentNode);
+          z.textContent = zn[0]; z.style.fontWeight = cs.fontWeight; z.style.color = cs.color;   // wygląd jak tekst obok, nie jak pogrubione słowo
+          ost.append(z); c.textContent = c.textContent.slice(zn[0].length);
+        }
+      }
+      const f = document.createDocumentFragment();
+      c.textContent.split(/([ \n\t]+)/).forEach(cz => {
+        if (!cz) return;
+        if (/^[ \n\t]+$/.test(cz)) return f.append(' ');
+        const sp = document.createElement('span');
+        // sam przecinek/kropka po słowie w tagu zostaje zwykłym tekstem, żeby nie przeskoczył na początek nowej linii
+        sp.className = /^[,.;:!?…)\]»”]+$/.test(cz) ? 'sl znak' : 'sl'; sp.style.setProperty('--i', i++); sp.textContent = cz; f.append(sp);
+      });
+      c.replaceWith(f);
+    });
+    idz(el);
+    el.style.setProperty('--rozp', (1 + Math.max(0, i - 1) * 0.14).toFixed(2));
+    if (!el.dataset.anim) el.dataset.anim = 'slowa';
+  });
+
+  // ── Elementy sterowane przewijaniem
+  const rzeczy = [...document.querySelectorAll('[data-anim]')].map(el => ({
+    el, s: new Sprezyna(0, +el.dataset.resp || 0.55),
+    od: +el.dataset.od || 0, zasieg: +el.dataset.zasieg || 0.3, bramka: +el.dataset.bramka || 0,
+    kotwica: el.dataset.kotwica === 'rodzic' ? el.parentElement : el, gora: 0, ost: -1,
+  }));
+  rzeczy.forEach(r => r.el.style.setProperty('--t', SPOKOJ ? 1 : 0));
+
+  function mierz() {
+    rzeczy.forEach(r => { let t = 0, e = r.kotwica; while (e) { t += e.offsetTop; e = e.offsetParent; } r.gora = t; });
+  }
+  mierz();
+  new ResizeObserver(mierz).observe(document.body);
+  if (document.fonts) document.fonts.ready.then(mierz);
+
+  // ── Stos zdjęć: wachlarz na wejście, paralaksa za kursorem, rzut karty na spód
+  const stos = document.querySelector('.stos');
+  const karty = [...stos.querySelectorAll('.foto')].map(el => ({
+    el, x: new Sprezyna(innerWidth * 0.7, 0.75, 0.76), y: new Sprezyna(140, 0.75, 0.76), r: new Sprezyna(48, 0.75, 0.76), sk: new Sprezyna(0.7, 0.75, 0.76), o: new Sprezyna(0, 0.4),
+  }));
+  karty.forEach((k, i) => { k.gotowa = performance.now() + 380 + i * 150; k.i = i; });   // wlatują po kolei
+  let rozrzut = 0;
+  let kolej = [2, 1, 0, 3, 4];                             // kolej[0] = karta na wierzchu (Red Bull)
+  const POZY = [{ x: 0, y: 0, r: 4, s: 1 }, { x: 0.2, y: -0.09, r: 13, s: 0.94 }, { x: -0.22, y: 0.04, r: -11, s: 0.9 }, { x: 0.3, y: 0.1, r: 18, s: 0.84 }, { x: -0.32, y: -0.07, r: -17, s: 0.82 }];
+  let mysz = { x: 0, y: 0 }, ciag = null, wLocie = null, rozlozone = false;
+  const szer = () => karty[0].el.offsetWidth;
+
+  function cele() {
+    const w = szer();
+    kolej.forEach((nr, miejsce) => {
+      const k = karty[nr], p = POZY[miejsce], gl = (karty.length - miejsce) * 7;
+      if (ciag && ciag.k === k) return;
+      if (performance.now() < k.gotowa) return;
+      const roz = 1 + rozrzut * 1.4;                        // przy przewijaniu stos się rozsypuje
+      k.x.cel = p.x * w * roz + mysz.x * gl; k.y.cel = p.y * w * roz - rozrzut * miejsce * 40 + mysz.y * gl;
+      k.r.cel = p.r * roz; k.sk.cel = p.s; k.o.cel = 1;
+      if (!(wLocie && wLocie.k === k)) k.el.style.zIndex = karty.length - miejsce;
+    });
+  }
+  function naSpod(k, vx, vy) {
+    kolej.push(kolej.shift());
+    [k.x, k.y, k.r, k.sk].forEach(sp => sp.z = 0.82);
+    k.x.v = vx; k.y.v = vy;
+    wLocie = { k, t: performance.now() };
+    k.el.style.zIndex = 10;
+    cele();
+  }
+  const rzut = v => (v / 1000) * 0.992 / (1 - 0.992);     // dokąd doleci gest o tej prędkości
+
+  karty.forEach(k => {
+    k.el.addEventListener('pointerdown', e => {
+      if (!rozlozone) return;
+      if (karty[kolej[0]] !== k) {                         // klik w kartę z tyłu: wyciągnij ją na wierzch
+        kolej = [karty.indexOf(k), ...kolej.filter(n => karty[n] !== k)];
+        wLocie = null; cele(); return;
+      }
+      k.el.setPointerCapture(e.pointerId);
+      ciag = { k, id: e.pointerId, gx: e.clientX - k.x.x, gy: e.clientY - k.y.x, hist: [], ruch: false, x0: e.clientX, y0: e.clientY };
+      k.el.classList.add('ciagnie');
+      k.sk.cel = 1.04; k.sk.z = 1;
+    });
+    k.el.addEventListener('pointermove', e => {
+      if (!ciag || ciag.id !== e.pointerId) return;
+      if (Math.hypot(e.clientX - ciag.x0, e.clientY - ciag.y0) > 6) ciag.ruch = true;
+      const x = e.clientX - ciag.gx, y = e.clientY - ciag.gy;
+      k.x.x = k.x.cel = x; k.x.v = 0; k.y.x = k.y.cel = y; k.y.v = 0;
+      k.r.cel = POZY[0].r + x * 0.035;
+      ciag.hist.push({ t: e.timeStamp, x, y }); if (ciag.hist.length > 6) ciag.hist.shift();
+    });
+    const pusc = e => {
+      if (!ciag || ciag.id !== e.pointerId) return;
+      const h = ciag.hist, a = h[0], b = h[h.length - 1];
+      let vx = 0, vy = 0;
+      if (a && b && b.t > a.t && e.timeStamp - b.t < 120) { vx = (b.x - a.x) / (b.t - a.t) * 1000; vy = (b.y - a.y) / (b.t - a.t) * 1000; }
+      const ruch = ciag.ruch; ciag = null;
+      k.el.classList.remove('ciagnie');
+      if (e.type === 'pointercancel') { cele(); return; }
+      if (!ruch) return naSpod(k, 3400, -700);             // zwykły klik też tasuje
+      const dolot = Math.hypot(k.x.x + rzut(vx), k.y.x + rzut(vy));
+      if (dolot > szer() * 0.55) naSpod(k, vx, vy);
+      else { [k.x, k.y, k.r, k.sk].forEach(sp => sp.z = 0.8); k.x.v = vx; k.y.v = vy; cele(); }
+    };
+    k.el.addEventListener('pointerup', pusc);
+    k.el.addEventListener('pointercancel', pusc);
+  });
+  document.querySelector('.start').addEventListener('pointermove', e => {
+    if (e.pointerType === 'touch' || SPOKOJ) return;
+    mysz = { x: (e.clientX / innerWidth - 0.5) * 2, y: (e.clientY / innerHeight - 0.5) * 2 };
+    if (rozlozone) cele();
+  });
+  addEventListener('resize', () => { if (rozlozone) cele(); });
+
+  // ── Pytania: płynne rozwijanie, które można przerwać w połowie
+  document.querySelectorAll('.pyt details').forEach(d => {
+    const odp = d.querySelector('.odp'), w = document.createElement('div');
+    w.className = 'odp-w'; odp.replaceWith(w); w.append(odp);
+    let anim = null;
+    d.querySelector('summary').addEventListener('click', e => {
+      e.preventDefault();
+      const teraz = w.getBoundingClientRect().height;      // wysokość z ekranu, także w trakcie ruchu
+      if (anim) anim.cancel();
+      const otwiera = !d.open || d.dataset.zamyka === '1';
+      d.open = true; d.dataset.zamyka = otwiera ? '' : '1';
+      const cel = otwiera ? odp.offsetHeight : 0;
+      if (SPOKOJ) { d.open = otwiera; d.dataset.zamyka = ''; return; }
+      anim = w.animate({ height: [teraz + 'px', cel + 'px'], opacity: [otwiera ? 0.4 : 1, otwiera ? 1 : 0] },
+        { duration: 420, easing: 'cubic-bezier(.2, .85, .25, 1)' });
+      d.querySelector('summary svg').style.rotate = otwiera ? '45deg' : '0deg';
+      anim.onfinish = () => { anim = null; if (!otwiera) { d.open = false; d.dataset.zamyka = ''; } };
+    });
+    d.querySelector('summary svg').style.rotate = d.open ? '45deg' : '0deg';
+  });
+
+  // ── Projekty: okno z filmami wyrasta z klikniętej karty i wraca tą samą drogą
+  const PROJEKTY = {"redbull": {"et": "Klient", "tytul": "Red Bull", "opis": ["W pracy dla Red Bulla trzeba naprawdę rozumieć, jak działają social media: co nagrać, jaki hook dać na początek, co zrobić, żeby widzowie od razu wiedzieli, że to Red Bull, i co najważniejsze, jak montować."], "grupy": [["Filmy", [{"ig": "https://www.instagram.com/p/DfRt0Mto4T9/", "t": "Post 1"}, {"ig": "https://www.instagram.com/p/DegeyUmIrL5/", "t": "Post 2"}, {"ig": "https://www.instagram.com/reel/DZw9mFSoAXu/", "t": "Rolka 1"}, {"ig": "https://www.instagram.com/reel/DbLtd0DoQ6x/", "t": "Rolka 2"}, {"ig": "https://www.instagram.com/reel/DZ5IGUYoK5p/", "t": "Rolka 3"}, {"ig": "https://www.instagram.com/reel/DZ2DTAsIrw_/", "t": "Rolka 4"}]]]}, "pzps": {"et": "Klient", "tytul": "Polski Związek Siatkówki", "opis": ["W pracy dla skarbu polskich sportów, czyli PZS, nie ma miejsca na błąd. Trzeba być gotowym zawsze i wszędzie, bo nigdy nie wie się, co się wydarzy, a czasami samemu trzeba prowokować różne sytuacje.", "Wchodząc w takie środowisko, trzeba mieć głowę zawsze na karku. Na początku nie zna się nikogo, a trzeba nagrywać interakcje kadry.", "Wstępny montaż musi być na następny dzień. Trzeba wybrać najlepsze momenty, pokolorować je i zmontować pod muzykę.", "Praca dla PZS jest ciężka, ale niezwykle satysfakcjonująca."], "grupy": [["Nagrywki / montaż / color grading", [{"yt": "zJHHSCJDVSA", "t": "Rozpoczynamy sezon 2026! Vlog POD SIATKĄ", "s": 0}, {"yt": "LGlX_kCfQhU", "t": "Vlog POD SIATKĄ: Testy w Sosnowcu i Katowicach za nami!", "s": 1423}]], ["Montaż / color grading", [{"yt": "8unanSdp6Ro", "t": "Tak było na finałach VNL — mistrzowie od kuchni", "s": 201}, {"yt": "JqfD_oZNtB0", "t": "Obronili złoto VNL! Tak świętują siatkarze w Chinach", "s": 0}, {"yt": "mhaSqBRfp60", "t": "Vlog POD SIATKĄ — nasze boisko, nasi Kibice!", "s": 0}]]]}, "allegro": {"et": "Klient", "tytul": "Allegro", "opis": ["W dwóch projektach dla Allegro nagrywałem rolki reklamowe na social media."], "grupy": [["Filmy", [{"ig": "https://www.instagram.com/reel/DaFt1n-qU_F/", "t": "Rolka"}, {"link": "https://drive.google.com/file/d/1vmgjqbH5GEDfP8Z-RjIq16Aj-PGH1CAF/view?usp=sharing", "t": "Film", "skad": "Google Drive"}]]]}, "ibo": {"et": "Klient", "tytul": "IBO", "opis": ["Od ponad roku prowadzę kanał YouTube oraz odpowiadam za social media firmy Dambat.", "Robię wszystko: scenariusz, zdjęcia w studiu i w terenie u instalatorów, montaż, animacje 3D we własnym silniku, miniatury, tytuły i opisy. Do tego relacje z targów i rolki.", "Filmy robię dla kogoś, kto wraca zmęczony z pracy, a nie dla działu technicznego. Dlatego w każdym tłumaczę parametry na codzienność i mówię też, czego dany produkt nie zrobi."], "grupy": [["Filmy", [{"yt": "31-1C3XFY7s", "t": "Dzień wiercenia studni głębinowej od A do Z! Wszystko, co musisz wiedzieć!", "s": 428}, {"yt": "NHQxIycWcd4", "t": "Koniec z zimnym prysznicem. Ten falownik oszczędza do 60% prądu!", "s": 0}, {"yt": "vA3PDNwlt7E", "t": "Sucha studnia? Skoki ciśnienia? Te dwa urządzenia załatwiają oba problemy!", "s": 1}, {"yt": "QhgZziejW7A", "t": "3 błędy, przez które twoja kotłownia nie będzie działała prawidłowo!", "s": 124}, {"yt": "kYcXwaw-1EA", "t": "Ile procent odwiertów kończy się nieznalezieniem wody? Odpowiada doświadczony instalator!", "s": 156}]]]}, "moje": {"et": "Moje", "tytul": "Moje filmy", "opis": ["Na swoich kanałach zebrałem ponad 20 000 obserwujących i miliony wyświetleń. 16 000 z nich przyszło z zaledwie 30 rolek na Instagramie i TikToku.", "STOKE UP! to mój własny projekt. Opowiadam w nim historie marek i sportów ekstremalnych: skąd się wzięły, co je wyniosło na szczyt i co je czasem z niego strąciło.", "Każdy film robię od początku do końca sam: research, scenariusz, zdjęcia, montaż i animacje. Wolę wypuścić dwie rolki w miesiącu, które ktoś zapamięta, niż trzydzieści, które przewinie.", "Film o tym, jak zarabia Red Bull, obejrzało 184 tysiące osób, a historię Tony'ego Hawka 110 tysięcy. Rolka o upadku Vansa pobiła mój rekord na Instagramie.", "Sam jeżdżę na desce i się wspinam, więc o sporcie wiem co nieco."], "grupy": [["YouTube", [{"yt": "tIw9_0Z-idc", "t": "Jak zarabia Red Bull, NIE produkując NIC?", "s": 247}, {"yt": "eK0Tfle6Z0I", "t": "Z jazdy na DESCE kupił dom w wieku 17 LAT!", "s": 106, "hq": 1}]], ["Instagram", [{"ig": "https://www.instagram.com/p/Db0PU-AgxTU/", "t": "Post 1"}, {"ig": "https://www.instagram.com/p/DbiPXOpAELr/", "t": "Post 2"}, {"ig": "https://www.instagram.com/p/DWJRue6iPoJ/", "t": "Post 3"}]]]}};
+  const oknoTlo = document.createElement('div'); oknoTlo.className = 'pokno-tlo';
+  const okno = document.createElement('div'); okno.className = 'pokno';
+  okno.setAttribute('role', 'dialog'); okno.setAttribute('aria-modal', 'true');
+  document.body.append(oknoTlo, okno);
+  let zKarty = null, ruchOkna = null;
+
+  // Żywy podgląd z YouTube: wyciszony, bez kontrolek, pojawia się, gdy już gra.
+  // Z pliku otwartego prosto z dysku YouTube nie pozwala osadzać, wtedy zostają miniatury.
+  const ZYWE = location.protocol !== 'file:' && !SPOKOJ;
+  function wideo(pojemnik, id, start) {
+    if (!ZYWE || pojemnik.querySelector('.zywe')) return;
+    const f = document.createElement('iframe');
+    f.className = 'zywe'; f.allow = 'autoplay; encrypted-media'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&mute=1&controls=0&loop=1&playlist=' + id
+      + '&playsinline=1&rel=0&disablekb=1&iv_load_policy=3&modestbranding=1' + (start ? '&start=' + start : '');
+    f.addEventListener('load', () => setTimeout(() => f.classList.add('gra'), 2800));
+    pojemnik.append(f);
+  }
+  // Okładki z własnych plików wideo: grają, gdy karta jest na ekranie (działa też z dysku).
+  if (!SPOKOJ && 'IntersectionObserver' in window) {
+    const okoWideo = new IntersectionObserver(wpisy => wpisy.forEach(w => {
+      if (w.isIntersecting) w.target.play().catch(() => {}); else w.target.pause();
+    }), { threshold: 0.3 });
+    document.querySelectorAll('.karta .foto video, .stos video').forEach(v => okoWideo.observe(v));
+  }
+  // Okładki kart grają tylko wtedy, gdy karta jest na ekranie.
+  const startFilmu = id => { for (const p of Object.values(PROJEKTY)) for (const g of p.grupy) for (const f of g[1]) if (f.yt === id) return f.s || 25; return 25; };
+  if (ZYWE && 'IntersectionObserver' in window) {
+    const oko = new IntersectionObserver(wpisy => wpisy.forEach(w => {
+      const foto = w.target.querySelector('.foto'), m = /vi\/([^/]+)\//.exec(foto.style.backgroundImage);
+      if (!m) return;
+      if (w.isIntersecting) wideo(foto, m[1], +w.target.dataset.start || startFilmu(m[1])); else foto.querySelectorAll('.zywe').forEach(f => f.remove());
+    }), { threshold: 0.35 });
+    document.querySelectorAll('.karta.zdj').forEach(k => oko.observe(k));
+  }
+  const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const GRAJ = '<span class="graj"><svg viewBox="0 0 16 16"><path d="M3 1.5l11 6.5-11 6.5z"/></svg></span>';
+
+  function kafel(f, n) {
+    let href, kadr, skad, znacznik = '', klasa = '';
+    if (f.yt) {
+      href = 'https://www.youtube.com/watch?v=' + f.yt + (f.s ? '&t=' + f.s + 's' : '');
+      kadr = '<img loading="lazy" alt="" src="https://i.ytimg.com/vi/' + f.yt + '/' + (f.hq ? 'hqdefault' : 'maxresdefault') + '.jpg">' + GRAJ; skad = 'YouTube';
+      znacznik = ' data-yt="' + f.yt + '" data-s="' + (f.s || 0) + '"';
+    } else if (f.ig && ZYWE) {
+      href = f.ig; skad = 'Instagram'; klasa = ' ig';
+      kadr = '<iframe loading="lazy" scrolling="no" allow="autoplay; encrypted-media" title="' + esc(f.t) + '" src="' + esc(f.ig) + 'embed/"></iframe>';
+    } else {
+      href = f.ig || f.link; skad = f.ig ? 'Instagram' : f.skad;
+      kadr = GRAJ + '<span class="skad">' + skad + '</span>';
+    }
+    return '<a class="film-k" style="--n:' + n + '" target="_blank" rel="noopener" href="' + esc(href) + '"><span class="kadr' + klasa + '"' + znacznik + '>' + kadr + '</span><b>' + esc(f.t) + '</b><small>' + skad + ' ↗</small></a>';
+  }
+  function wzgledemKarty() {
+    const k = zKarty.getBoundingClientRect(), o = okno.getBoundingClientRect();
+    return `translate(${k.left + k.width / 2 - (o.left + o.width / 2)}px, ${k.top + k.height / 2 - (o.top + o.height / 2)}px) scale(${k.width / o.width}, ${k.height / o.height})`;
+  }
+  function otworzProjekt(klucz, karta) {
+    const p = PROJEKTY[klucz]; if (!p) return;
+    let n = 0;
+    okno.innerHTML = '<button class="zamknij" type="button" aria-label="Zamknij"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button>'
+      + '<p class="et">' + esc(p.et) + '</p><h2>' + esc(p.tytul) + '</h2>'
+      + (p.opis.length ? '<div class="op">' + p.opis.map(a => '<p>' + esc(a) + '</p>').join('') + '</div>' : '')
+      + p.grupy.map(g => '<h3>' + esc(g[0]) + '</h3><div class="filmy' + (ZYWE && g[1].every(f => f.ig) ? ' pion' : '') + '">' + g[1].map(f => kafel(f, n++)).join('') + '</div>').join('')
+      + '<p class="i-wiecej">I wiele więcej</p>';
+    okno.querySelector('.zamknij').addEventListener('click', zamknijProjekt);
+    okno.querySelectorAll('[data-yt]').forEach((k, i) => setTimeout(() => { if (k.isConnected) wideo(k, k.dataset.yt, +k.dataset.s); }, 700 + i * 350));
+    okno.classList.remove('male'); okno.scrollTop = 0; zKarty = karta;
+    if (ruchOkna) ruchOkna.cancel();
+    okno.style.transform = ''; okno.classList.add('widac'); oknoTlo.classList.add('widac');
+    document.documentElement.style.overflow = 'hidden';
+    if (!SPOKOJ) ruchOkna = okno.animate([{ transform: wzgledemKarty(), opacity: 0.4, borderRadius: '22px' }, { transform: 'none', opacity: 1, borderRadius: '28px' }],
+      { duration: 620, easing: 'cubic-bezier(.2, .9, .25, 1)' });
+    okno.querySelector('.zamknij').focus({ preventScroll: true });
+  }
+  function zamknijProjekt() {
+    if (!okno.classList.contains('widac')) return;
+    const skad = getComputedStyle(okno).transform;                 // startuj z miejsca, w którym okno jest teraz
+    if (ruchOkna) ruchOkna.cancel();
+    oknoTlo.classList.remove('widac'); document.documentElement.style.overflow = '';
+    const koniec = () => { okno.classList.remove('widac', 'male'); okno.innerHTML = ''; if (zKarty) zKarty.focus({ preventScroll: true }); };
+    if (SPOKOJ || !zKarty) return koniec();
+    ruchOkna = okno.animate([{ transform: skad === 'none' ? 'none' : skad, opacity: 1 }, { transform: wzgledemKarty(), opacity: 0 }],
+      { duration: 460, easing: 'cubic-bezier(.4, 0, .2, 1)' });
+    ruchOkna.onfinish = koniec;
+  }
+  document.querySelectorAll('.karta[data-projekt]').forEach(k => k.addEventListener('click', e => { e.preventDefault(); otworzProjekt(k.dataset.projekt, k); }));
+  oknoTlo.addEventListener('click', zamknijProjekt);
+  addEventListener('keydown', e => { if (e.key === 'Escape') zamknijProjekt(); });
+
+  // ── Kontakt: okno z formularzem wyrasta z klikniętego przycisku i otwiera gotowego maila
+  const ADRES = 'kontakt@tadeuszpaprocki.pl';
+  const KRZYZYK = '<button class="zamknij" type="button" aria-label="Zamknij"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button>';
+  const STRZALKA = '<span class="strz"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>';
+  const stopkaAdresu = '<p class="adres"><span>Albo napisz prosto na <b>' + ADRES + '</b></span><button class="kopiuj" type="button">Skopiuj adres</button></p>';
+  function podepnijOkno() {
+    okno.querySelector('.zamknij').addEventListener('click', zamknijProjekt);
+    const k = okno.querySelector('.kopiuj');
+    if (k) k.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(ADRES); k.textContent = 'Skopiowano'; }
+      catch { k.textContent = 'Zaznacz adres obok'; }
+      setTimeout(() => { if (k.isConnected) k.textContent = 'Skopiuj adres'; }, 2200);
+    });
+  }
+  function otworzKontakt(guzik) {
+    okno.classList.add('male');
+    okno.innerHTML = KRZYZYK + '<p class="et">Kontakt</p><h2>Napisz do mnie</h2>'
+      + '<form class="formularz" novalidate>'
+      + '<label>Jak masz na imię?<input name="imie" type="text" autocomplete="name"></label>'
+      + '<label>Co chcesz nakręcić?<textarea name="tresc" required placeholder="Dwa zdania wystarczą."></textarea></label>'
+      + '<p class="blad" role="alert"></p>'
+      + '<div class="rzad"><button class="guzik" type="submit">Wyślij ' + STRZALKA + '</button></div></form>' + stopkaAdresu;
+    podepnijOkno();
+    const f = okno.querySelector('form'), tresc = f.elements.tresc, blad = f.querySelector('.blad');
+    tresc.addEventListener('input', () => { tresc.classList.remove('zle'); blad.textContent = ''; });
+    f.addEventListener('submit', e => {
+      e.preventDefault();
+      const imie = f.elements.imie.value.trim(), t = tresc.value.trim();
+      if (!t) { tresc.classList.add('zle'); blad.textContent = 'Napisz choć jedno zdanie o tym, co chcesz nakręcić.'; tresc.focus(); return; }
+      const temat = 'Wiadomość ze strony' + (imie ? ' — ' + imie : '');
+      location.href = 'mailto:' + ADRES + '?subject=' + encodeURIComponent(temat) + '&body=' + encodeURIComponent(t + (imie ? '\n\n' + imie : ''));
+      okno.innerHTML = KRZYZYK + '<p class="et">Kontakt</p><h2>Prawie gotowe</h2>'
+        + '<p class="potw">Otworzyłem Twój program pocztowy z gotową wiadomością. Wystarczy kliknąć „Wyślij”. Jeśli nic się nie otworzyło, skopiuj adres i napisz ręcznie.</p>' + stopkaAdresu;
+      podepnijOkno();
+    });
+    okno.scrollTop = 0; zKarty = guzik;
+    if (ruchOkna) ruchOkna.cancel();
+    okno.style.transform = ''; okno.classList.add('widac'); oknoTlo.classList.add('widac');
+    document.documentElement.style.overflow = 'hidden';
+    if (!SPOKOJ) ruchOkna = okno.animate([{ transform: wzgledemKarty(), opacity: 0.3 }, { transform: 'none', opacity: 1 }],
+      { duration: 520, easing: 'cubic-bezier(.2, .9, .25, 1)' });
+    f.elements.imie.focus({ preventScroll: true });
+  }
+  document.querySelectorAll('a.guzik').forEach(g => g.addEventListener('click', e => { e.preventDefault(); otworzKontakt(g); }));
+
+  // ── Nagłówek zmienia się co kilka sekund
+  if (!SPOKOJ) document.querySelectorAll('.zmienny').forEach(el => {
+    const wersje = [...el.querySelectorAll('.wer')];
+    if (wersje.length < 2) return;
+    let aktualna = 0, zegar = null;
+    const zmien = () => {
+      if (document.hidden) return;
+      const stara = wersje[aktualna]; aktualna = (aktualna + 1) % wersje.length; const nowa = wersje[aktualna];
+      nowa.classList.add('bez', 'pod'); nowa.classList.remove('nad'); nowa.offsetWidth;   // ustaw pod spodem bez animacji
+      nowa.classList.remove('bez', 'pod'); stara.classList.add('nad');
+    };
+    // Poza ekranem wraca do pierwszego hasła, więc po przewinięciu zawsze zaczyna od początku.
+    const odPoczatku = () => {
+      clearInterval(zegar); zegar = null; aktualna = 0;
+      wersje.forEach((w, i) => { w.classList.add('bez'); w.classList.remove('nad'); w.classList.toggle('pod', i > 0); w.offsetWidth; w.classList.remove('bez'); });
+    };
+    new IntersectionObserver(wpisy => wpisy.forEach(w => {
+      if (w.isIntersecting) { if (!zegar) zegar = setInterval(zmien, +el.dataset.co || 4200); }
+      else odPoczatku();
+    }), { threshold: 0.2 }).observe(el);
+  });
+
+  // ── Menu podświetla sekcję, w której jesteś
+  const linkiMenu = [...document.querySelectorAll('.gora nav a[href^="#"]')];
+  const sekcjeMenu = linkiMenu.map(a => document.querySelector(a.getAttribute('href')));
+  if ('IntersectionObserver' in window) {
+    const okoMenu = new IntersectionObserver(wpisy => wpisy.forEach(w => {
+      const i = sekcjeMenu.indexOf(w.target); if (i > -1) linkiMenu[i].classList.toggle('tu', w.isIntersecting);
+    }), { rootMargin: '-45% 0px -45% 0px' });
+    sekcjeMenu.forEach(e => e && okoMenu.observe(e));
+  }
+
+  // ── Imię, menu i linki w stopce: każda litera ma kopię pod spodem, która wjeżdża falą po najechaniu
+  document.querySelectorAll('.gora .imie, .gora nav a, .stopka .dol a').forEach(a => {
+    const tekst = a.textContent.trim();
+    const warstwa = klasa => {
+      const s = document.createElement('span'); s.className = klasa;
+      [...tekst].forEach((z, i) => { const l = document.createElement('span'); l.className = 'lt'; l.textContent = z; l.style.setProperty('--i', i); s.append(l); });
+      return s;
+    };
+    const rolka = document.createElement('span'); rolka.className = 'rolka'; rolka.setAttribute('aria-hidden', 'true');
+    rolka.append(warstwa('r1'), warstwa('r2'));
+    a.setAttribute('aria-label', tekst); a.textContent = ''; a.append(rolka);
+    if (a.closest('.stopka')) a.insertAdjacentHTML('beforeend', '<svg class="ukos" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9 9 3M4 3h5v5"/></svg>');
+  });
+
+  // ── Pigułka w menu
+  const navM = document.querySelector('.gora nav');
+  if (navM) {
+    const pig = document.createElement('span'); pig.className = 'pigulka'; pig.setAttribute('aria-hidden', 'true');
+    navM.prepend(pig);
+    let nad = null;
+    const ustawPig = () => {
+      const cel = nad || navM.querySelector('a.tu');
+      if (!cel || !cel.offsetWidth) { pig.classList.remove('jest', 'nad'); return; }
+      const poloz = () => {
+        pig.style.width = cel.offsetWidth + 'px'; pig.style.height = cel.offsetHeight + 'px';
+        pig.style.translate = `${cel.offsetLeft}px ${cel.offsetTop}px`;
+      };
+      if (!pig.classList.contains('jest')) { pig.style.transition = 'none'; poloz(); pig.offsetWidth; pig.style.transition = ''; }
+      else poloz();
+      pig.classList.add('jest'); pig.classList.toggle('nad', !!nad);
+    };
+    linkiMenu.forEach(a => {
+      a.addEventListener('pointerenter', e => { if (e.pointerType === 'touch') return; nad = a; ustawPig(); });
+      new MutationObserver(ustawPig).observe(a, { attributes: true, attributeFilter: ['class'] });
+    });
+    navM.addEventListener('pointerleave', () => { nad = null; ustawPig(); });
+    addEventListener('resize', ustawPig);
+  }
+
+  // ── Podpis „Tadek” wypełnia dokładnie szerokość kolumny
+  const podpis = document.getElementById('podpisTadek');
+  if (podpis) {
+    // mierzymy prawdziwy kształt liter (nie pudełko tekstu): T zaczyna się równo z lewą krawędzią kolumny,
+    // a koniec „k” kończy równo z prawą — nic nie wystaje i nic nie jest ucinane
+    const dopasuj = () => {
+      const pole = podpis.parentElement, szer = pole.clientWidth; if (!szer) return;
+      const ctx = document.createElement('canvas').getContext('2d');
+      ctx.font = `700 100px ${getComputedStyle(podpis).fontFamily}`;
+      const tekst = podpis.textContent, ls = -6.5;                                  // letter-spacing −.065em przy 100px
+      const lewy = -ctx.measureText(tekst[0]).actualBoundingBoxLeft;               // odstęp od początku do tuszu T
+      const prawy = ctx.measureText(tekst.slice(0, -1)).width + (tekst.length - 1) * ls + ctx.measureText(tekst.slice(-1)).actualBoundingBoxRight;
+      const tusz = prawy - lewy;
+      if (!(tusz > 0)) return;
+      const fs = 100 * szer / tusz;
+      pole.style.fontSize = fs.toFixed(2) + 'px';
+      podpis.style.marginLeft = (-lewy / 100).toFixed(4) + 'em';
+      podpis.style.paddingRight = '.12em';                                          // pudełko obejmuje cały tusz ostatniej litery
+    };
+    dopasuj(); addEventListener('resize', dopasuj); if (document.fonts) document.fonts.ready.then(dopasuj);
+  }
+
+  // ── Poświata na nagłówku: smuga światła za kursorem, płynnie dogania mysz i gaśnie po wyjściu
+  const naglowek = document.querySelector('.start h1');
+  if (naglowek && matchMedia('(hover: hover)').matches) {
+    const cel = { x: 0, y: 0, a: 0 }, poz = { x: 0, y: 0, a: 0 };
+    let biegnie = false, poprzPosw = 0;
+    const krokPosw = n => {
+      const dt = Math.min(0.05, Math.max(0, (n - poprzPosw) / 1000)); poprzPosw = n;
+      const k = 1 - Math.exp(-dt * 12), ka = 1 - Math.exp(-dt * 6);
+      poz.x += (cel.x - poz.x) * k; poz.y += (cel.y - poz.y) * k; poz.a += (cel.a - poz.a) * ka;
+      naglowek.querySelectorAll('.wer:not(.pod):not(.nad) .sl').forEach(sl => {
+        const r = sl.getBoundingClientRect();
+        sl.style.setProperty('--gx', (poz.x - r.left).toFixed(1) + 'px');
+        sl.style.setProperty('--gy', (poz.y - r.top).toFixed(1) + 'px');
+        sl.style.setProperty('--ga', poz.a.toFixed(3));
+      });
+      if (Math.abs(cel.a - poz.a) < 0.002 && cel.a === 0) { biegnie = false; return; }
+      requestAnimationFrame(krokPosw);
+    };
+    const start = () => { if (!biegnie) { biegnie = true; poprzPosw = performance.now(); requestAnimationFrame(krokPosw); } };
+    document.querySelector('.start').addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      const r = naglowek.getBoundingClientRect(), zapas = 90;
+      const blisko = e.clientX > r.left - zapas && e.clientX < r.right + zapas && e.clientY > r.top - zapas && e.clientY < r.bottom + zapas;
+      if (blisko && cel.a === 0) { poz.x = e.clientX; poz.y = e.clientY; }
+      cel.x = e.clientX; cel.y = e.clientY; cel.a = blisko ? 1 : 0; start();
+    });
+    document.querySelector('.start').addEventListener('pointerleave', () => { cel.a = 0; start(); });
+  }
+
+  // ── Portret w „O mnie”: tło z tyłu, postać z przodu. Delikatny ruch kamery i gałęzi cały czas,
+  //    a pod kursorem warstwy rozjeżdżają się jak w kartach projektów.
+  const portret = document.getElementById('portret');
+  if (portret && !SPOKOJ) {
+    const tloP = portret.querySelector('.pw-tlo'), postacP = portret.querySelector('.pw-postac');
+    if (matchMedia('(hover: hover)').matches) portret.classList.add('galezie');
+    const cel = { x: 0, y: 0, h: 0 }, poz = { x: 0, y: 0, h: 0 };
+    let widac = false, t0p = performance.now(), poprzP = t0p;
+    portret.addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      const r = portret.getBoundingClientRect();
+      cel.x = ((e.clientX - r.left) / r.width - 0.5) * 2; cel.y = ((e.clientY - r.top) / r.height - 0.5) * 2; cel.h = 1;
+    });
+    portret.addEventListener('pointerleave', () => { cel.x = 0; cel.y = 0; cel.h = 0; });
+    new IntersectionObserver(w => { widac = w[0].isIntersecting; if (widac) { poprzP = performance.now(); requestAnimationFrame(ruchPortretu); } }).observe(portret);
+    function ruchPortretu(n) {
+      if (!widac) return;
+      const dt = Math.min(0.05, Math.max(0, (n - poprzP) / 1000)); poprzP = n;
+      const k = 1 - Math.exp(-dt * 5);
+      poz.x += (cel.x - poz.x) * k; poz.y += (cel.y - poz.y) * k; poz.h += (cel.h - poz.h) * k;
+      const t = (n - t0p) / 1000;
+      // kamera: powolny, nieregularny dryf całego kadru
+      // stały ruch kamery: powolne płynięcie po kadrze, lekki przechył i oddech przybliżenia (ok. 30 s)
+      const kx = Math.sin(t * 0.16) * 12.7 + Math.sin(t * 0.47 + 1) * 2.55, ky = Math.cos(t * 0.13) * 9.1 + Math.sin(t * 0.37) * 2;
+      const kr = Math.sin(t * 0.11) * 0.73, ks = 1 + (0.5 - 0.5 * Math.cos(t * 0.21)) * 0.082;
+      // gałęzie: tło kołysze się trochę inaczej niż postać
+      const gx = Math.sin(t * 0.47) * 1.4 + Math.sin(t * 1.13) * 0.5, gy = Math.sin(t * 0.31 + 2) * 0.8;
+      const sk = 1 + poz.h * 0.035;
+      tloP.style.transform = `translate3d(${(kx * 0.6 + gx - poz.x * 14).toFixed(2)}px, ${(ky * 0.6 + gy - poz.y * 10).toFixed(2)}px, 0) rotate(${(kr * 0.6).toFixed(3)}deg) scale(${((1 + (ks - 1) * 0.55) * sk).toFixed(4)})`;
+      postacP.style.transform = `translate3d(${(kx + poz.x * 7).toFixed(2)}px, ${(ky + poz.y * 5).toFixed(2)}px, 0) rotate(${kr.toFixed(3)}deg) scale(${(ks * (1 + poz.h * 0.05)).toFixed(4)})`;
+      requestAnimationFrame(ruchPortretu);
+    }
+  }
+
+  // ── Żółta poświata na: karcie kontaktu, nagłówku pytań, „Zróbmy film.” i wielkim „Tadek”
+  if (matchMedia('(hover: hover)').matches) {
+    const GRUPY = [
+      { pole: '.wizyt h3', cele: '.wizyt h3, .wizyt h3 b' },
+      { pole: '#pytania .tytul', cele: '#pytania .tytul .sl' },
+      { pole: '.stopka h2', cele: '.stopka h2 .wer:not(.pod):not(.nad) .sl, .stopka h2 .wer:not(.pod):not(.nad)' },
+      { pole: '.podpis-tadek', cele: '#podpisTadek' },
+    ].map(g => ({ ...g, a: 0, celA: 0 }));
+    const mysz2 = { x: -999, y: -999 }, pozM = { x: -999, y: -999 };
+    const przygotuj = el => {
+      if (el.dataset.kol) return;
+      const c = getComputedStyle(el).color; el.dataset.kol = c;
+      const m = c.match(/[\d.]+/g) || [0, 0, 0], jasny = (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > 0.45;
+      el.style.setProperty('--kol', c); el.style.setProperty('--blask', jasny ? '#6ea8ff' : '#1f6bff');
+      el.classList.add('blask');
+    };
+    let biegnieB = false, poprzB = 0;
+    const krokB = n => {
+      const dt = Math.min(0.05, Math.max(0, (n - poprzB) / 1000)); poprzB = n;
+      const k = 1 - Math.exp(-dt * 12), ka = 1 - Math.exp(-dt * 6);
+      pozM.x += (mysz2.x - pozM.x) * k; pozM.y += (mysz2.y - pozM.y) * k;
+      let dalej = false;
+      GRUPY.forEach(g => {
+        g.a += (g.celA - g.a) * ka;
+        if (g.a < 0.002 && g.celA === 0) { if (g.a !== 0) { g.a = 0; } }
+        else dalej = true;
+        document.querySelectorAll(g.cele).forEach(el => {
+          if (el.matches('.wer') && el.querySelector('.sl')) return;   // słowa mają własną poświatę
+          przygotuj(el);
+          const r = el.getBoundingClientRect();
+          el.style.setProperty('--gx', (pozM.x - r.left).toFixed(1) + 'px');
+          el.style.setProperty('--gy', (pozM.y - r.top).toFixed(1) + 'px');
+          el.style.setProperty('--ga', g.a.toFixed(3));
+        });
+      });
+      if (dalej) requestAnimationFrame(krokB); else biegnieB = false;
+    };
+    addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      const nowa = mysz2.x === -999; mysz2.x = e.clientX; mysz2.y = e.clientY; if (nowa) { pozM.x = e.clientX; pozM.y = e.clientY; }
+      let ktos = false;
+      GRUPY.forEach(g => {
+        const el = document.querySelector(g.pole); if (!el) return;
+        const r = el.getBoundingClientRect(), zap = 90;
+        g.celA = (e.clientX > r.left - zap && e.clientX < r.right + zap && e.clientY > r.top - zap && e.clientY < r.bottom + zap) ? 1 : 0;
+        if (g.celA || g.a > 0.002) ktos = true;
+      });
+      if (ktos && !biegnieB) { biegnieB = true; poprzB = performance.now(); requestAnimationFrame(krokB); }
+    }, { passive: true });
+  }
+
+  // ── Przyciski przyciągają się lekko do kursora
+  if (!SPOKOJ && matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll('.guzik').forEach(g => {
+      g.addEventListener('pointermove', e => {
+        const r = g.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2), dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+        g.style.setProperty('--bx', (dx * 7).toFixed(1) + 'px'); g.style.setProperty('--by', (dy * 5).toFixed(1) + 'px');
+      });
+      g.addEventListener('pointerleave', () => { g.style.setProperty('--bx', '0px'); g.style.setProperty('--by', '0px'); });
+    });
+  }
+
+  // ── Połysk na pierwszym ekranie: co kilka sekund żółte światło przelatuje ukośnie
+  //    przez nagłówek i wszystkie teksty pod nim. Pierwszy raz zaraz po wczytaniu.
+  if (!SPOKOJ) {
+    const kol = document.querySelector('.start .srodek > div:first-child');
+    const CELE = '.start h1 .wer:not(.pod):not(.nad) .sl, .start .fach .sl, .start .opis .sl';
+    const szykuj = el => {
+      if (el.closest('h1') || el.dataset.kol) return;
+      const c = getComputedStyle(el).color; el.dataset.kol = c;
+      const m = c.match(/[\d.]+/g) || [0, 0, 0], jasny = (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > 0.45;
+      el.style.setProperty('--kol', c); el.style.setProperty('--blask', jasny ? '#6ea8ff' : '#1f6bff');
+      el.classList.add('blask');
+    };
+    const CZAS = 1700, CO = 5200, PIERWSZY = 1900;
+    let start0 = performance.now() + PIERWSZY;
+    const przelot = n => {
+      if (document.hidden || scrollY > innerHeight * 0.8 || !kol) { start0 = n + 800; requestAnimationFrame(przelot); return; }
+      const t = n - start0;
+      if (t >= 0 && t <= CZAS) {
+        const kr = kol.getBoundingClientRect(), pr = t / CZAS;
+        const e = pr < 0.5 ? 2 * pr * pr : 1 - Math.pow(-2 * pr + 2, 2) / 2;          // płynny start i hamowanie
+        const sx = kr.left - 260 + e * (kr.width + 620), ga = Math.sin(Math.PI * pr);
+        document.querySelectorAll(CELE).forEach(el => {
+          szykuj(el);
+          const r = el.getBoundingClientRect();
+          const x = sx - (r.top - kr.top) * 0.45;                                      // ukośna smuga
+          el.style.setProperty('--gx', (x - r.left).toFixed(1) + 'px');
+          el.style.setProperty('--gy', (r.height / 2).toFixed(1) + 'px');
+          el.style.setProperty('--ga', ga.toFixed(3));
+        });
+      } else if (t > CZAS) {
+        document.querySelectorAll(CELE).forEach(el => el.style.setProperty('--ga', '0'));
+        start0 += CO;
+      }
+      requestAnimationFrame(przelot);
+    };
+    requestAnimationFrame(przelot);
+  }
+
+  // ── Odbicie na dole: po dojechaniu do końca strona zjeżdża jeszcze kawałek z rosnącym oporem
+  //    (jak gumka w iOS) i po puszczeniu sprężyście wraca.
+  if (!SPOKOJ) {
+    const root = document.documentElement;
+    // kopia „Tadek” do odsłonięcia dolnej, uciętej części liter w pasku, który odsłania odbicie
+    const podpisO = document.getElementById('podpisTadek');
+    const odslona = document.createElement('div'); odslona.className = 'tadek-odslona'; odslona.setAttribute('aria-hidden', 'true');
+    document.body.append(odslona);
+    const poleO = podpisO ? podpisO.parentElement : null;
+    let kopiaPola = null;
+    const zrobKopie = () => {                                                            // świeża kopia całego podpisu (z aktualną poświatą i rozmiarem)
+      if (!poleO) return;
+      const r = poleO.getBoundingClientRect();
+      kopiaPola = poleO.cloneNode(true); kopiaPola.classList.remove('podpis-oryg');
+      kopiaPola.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+      odslona.style.width = r.width + 'px'; odslona.style.setProperty('--h0', poleO.clientHeight.toFixed(2));
+      odslona.replaceChildren(kopiaPola);
+    };
+    if (poleO) poleO.classList.add('podpis-oryg');
+    let ukryte = 60;                                                                     // ile px liter jest uciętych
+    const zmierzUkryte = () => {
+      if (!podpisO) return;
+      const pole = podpisO.parentElement, cs = getComputedStyle(pole), fs = parseFloat(cs.fontSize);
+      const ctx = document.createElement('canvas').getContext('2d');
+      ctx.font = `700 ${fs}px ${getComputedStyle(podpisO).fontFamily}`;
+      const m = ctx.measureText('Tadek');
+      const asc = m.fontBoundingBoxAscent || fs * 0.95, desc = m.fontBoundingBoxDescent || fs * 0.25;
+      const baza = (fs - (asc + desc)) / 2 + asc + fs * 0.02;                           // linia bazowa od góry pola
+      ukryte = Math.max(12, baza + (m.actualBoundingBoxDescent || 0) - pole.clientHeight + fs * 0.03);
+    };
+    zmierzUkryte(); addEventListener('resize', zmierzUkryte); if (document.fonts) document.fonts.ready.then(zmierzUkryte);
+    document.querySelectorAll('body > *').forEach(el => {
+      if (el.matches('script, svg, .gora, .postep, .pokno, .pokno-tlo, .babel, .tadek-odslona')) return;
+      const poz = getComputedStyle(el).position; if (poz === 'fixed' || poz === 'sticky') return;
+      el.classList.add('odbij');
+    });
+    const guma = (x, d) => (x * d * 0.55) / (d + 0.55 * Math.abs(x));      // im dalej, tym większy opór
+    let surowe = 0, pokaz = 0, v = 0, trzyma = false, czasPuszczenia = 0, biegnie = false, poprzO = 0, dotykY = null;
+    const naDole = () => scrollY >= root.scrollHeight - innerHeight - 1;
+    const rysuj = () => {
+      root.style.setProperty('--odbicie', pokaz.toFixed(2));
+      root.style.setProperty('--odslon', Math.min(1, Math.max(0, pokaz / ukryte)).toFixed(3));
+      const widac = poleO && pokaz > 0.5;
+      if (widac) {
+        if (!root.classList.contains('ciagnie')) zrobKopie();
+        const r = poleO.getBoundingClientRect();
+        odslona.style.transform = `translate(${r.left.toFixed(1)}px, ${r.top.toFixed(1)}px)`;
+      }
+      root.classList.toggle('ciagnie', !!widac);
+    };
+    const krok = n => {
+      const dt = Math.min(0.05, Math.max(0, (n - poprzO) / 1000)); poprzO = n;
+      if (trzyma && n - czasPuszczenia > 90 && dotykY === null) trzyma = false;    // kółko/gładzik ucichł
+      if (trzyma) { pokaz = guma(surowe, ukryte * 1.18); v = 0; }                   // twarde: tyle, ile trzeba, by odsłonić całe litery
+      else {
+        const w = 2 * Math.PI / 0.17, z = 0.8;                                       // szybka sprężyna z lekkim odbiciem
+        v += (-2 * z * w * v - w * w * pokaz) * dt; pokaz += v * dt; surowe = 0;
+        if (Math.abs(pokaz) < 0.05 && Math.abs(v) < 0.5) { pokaz = 0; v = 0; rysuj(); biegnie = false; return; }
+      }
+      rysuj(); requestAnimationFrame(krok);
+    };
+    const ruszaj = () => { if (!biegnie) { biegnie = true; poprzO = performance.now(); requestAnimationFrame(krok); } };
+    // gładzik po oderwaniu palców jeszcze przez ~sekundę wysyła malejące zdarzenia (bezwład) —
+    // rozpoznajemy je po kilku spadkach z rzędu i od razu puszczamy, zamiast trzymać stronę
+    let ostD = 0, spadki = 0, czasD = 0;
+    addEventListener('wheel', e => {
+      const teraz = performance.now(), d = e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+      if (teraz - czasD > 150) { ostD = 0; spadki = 0; }                          // nowy gest
+      spadki = d > 0 && d < ostD ? spadki + 1 : 0; ostD = d; czasD = teraz;
+      if (d > 0 && naDole() && !document.documentElement.style.overflow) {
+        if (spadki >= 4) { if (trzyma && dotykY === null) { trzyma = false; ruszaj(); } return; }
+        if (!trzyma) {                                                             // złapanie w trakcie powrotu: ciągniemy od miejsca, gdzie strona jest
+          const gr = ukryte * 1.18, p = Math.min(Math.max(pokaz, 0), gr * 0.98);
+          surowe = p * gr / (0.55 * (gr - p));
+        }
+        surowe = Math.min(surowe + d, innerHeight * 1.5);
+        trzyma = true; czasPuszczenia = teraz; ruszaj();
+      }
+    }, { passive: true });
+    addEventListener('touchstart', e => { dotykY = e.touches[0].clientY; }, { passive: true });
+    addEventListener('touchmove', e => {
+      if (dotykY === null) return;
+      const dy = dotykY - e.touches[0].clientY;
+      if (dy > 0 && naDole()) { surowe = dy; trzyma = true; ruszaj(); } else if (trzyma) { surowe = Math.max(0, dy); }
+    }, { passive: true });
+    addEventListener('touchend', () => { dotykY = null; trzyma = false; ruszaj(); }, { passive: true });
+  }
+
+  // ── Pętla
+  const gora = document.getElementById('gora'), srodek = document.querySelector('.start .srodek');
+  const t0 = performance.now();
+  let poprz = t0, ostY = scrollY;
+  function klatka(n) {
+    const dt = Math.max(0, (n - poprz) / 1000); poprz = n;
+    const y = scrollY, vh = innerHeight, koniec = document.documentElement.scrollHeight - vh;
+    const przyKoncu = ogr(1 - (koniec - y) / (vh * 0.3));  // na samym dole strony wszystko ma być dograne
+
+    rzeczy.forEach(r => {
+      let cel = 1;
+      if (!SPOKOJ) {
+        // to, co widać na pierwszym ekranie, po swojej kolejce w intro pokazuje się w całości — niezależnie od wysokości monitora
+        cel = n - t0 < r.bramka ? 0 : (r.bramka && r.gora < vh) ? 1 : Math.max(przyKoncu, ogr((y + vh * (0.94 - r.od) - r.gora) / (vh * r.zasieg)));
+      }
+      r.s.cel = cel;
+      if (!r.s.stoi) r.s.krok(dt);
+      if (r.s.x !== r.ost) { r.ost = r.s.x; r.el.style.setProperty('--t', r.s.x.toFixed(4)); }
+    });
+
+    srodek.style.setProperty('--wyj', SPOKOJ ? 0 : ogr(y / (vh * 0.8)).toFixed(3));
+    gora.classList.toggle('przew', y > 8);
+    if (y > ostY + 4 && y > 240) gora.classList.add('schowana');
+    else if (y < ostY - 4 || y < 240) gora.classList.remove('schowana');
+    ostY = y;
+
+    if (!rozlozone && n - t0 > 380) { rozlozone = true; cele(); }
+    if (rozlozone && n - t0 < 1400) cele();
+    const nowyRoz = SPOKOJ ? 0 : ogr(y / (vh * 0.8));
+    if (Math.abs(nowyRoz - rozrzut) > 0.002) { rozrzut = nowyRoz; if (rozlozone) cele(); }
+    mocnaKlatka(n, dt, y, vh);
+    if (wLocie) {                                           // rzucona karta chowa się pod spód, gdy zaczyna wracać
+      const k = wLocie.k, wraca = k.x.x * k.x.v + k.y.x * k.y.v < 0;
+      if ((wraca && n - wLocie.t > 60) || n - wLocie.t > 450) { wLocie = null; cele(); }
+    }
+    karty.forEach(k => {
+      [k.x, k.y, k.r, k.sk, k.o].forEach(sp => { if (!sp.stoi) sp.krok(dt); });
+      const ts = n / 1000, faza = k.i * 1.7, spokojna = SPOKOJ || (ciag && ciag.k === k) ? 0 : 1;
+      const ix = Math.cos(ts * 0.43 + faza) * 3.5 * spokojna, iy = Math.sin(ts * 0.57 + faza * 1.3) * 4.5 * spokojna;
+      const ir = (Math.sin(ts * 0.37 + faza) * 1.6 + Math.sin(ts * 0.91 + faza * 2) * 0.4) * spokojna;
+      k.el.style.transform = `translate3d(${(k.x.x + ix).toFixed(2)}px, ${(k.y.x + iy).toFixed(2)}px, 0) rotateX(${(-pochY.x * 8).toFixed(2)}deg) rotateY(${(pochX.x * 11).toFixed(2)}deg) rotate(${(k.r.x + ir).toFixed(2)}deg) scale(${k.sk.x.toFixed(4)})`;
+      k.el.style.opacity = k.o.x.toFixed(3);
+    });
+    requestAnimationFrame(klatka);
+  }
+
+  // ═════════ WERSJA MOCNA ═════════
+  const pochX = new Sprezyna(0, 0.6), pochY = new Sprezyna(0, 0.6);    // przechył stosu za kursorem
+
+  // Przypięte sceny: --s = postęp przez scenę, --wej = rozsuwanie ciemnego tła
+  const sceny = [...document.querySelectorAll('[data-scena]')].map(el => {
+    const slowa = [...el.querySelectorAll('.sl')], wiersze = [...el.querySelectorAll('.wiersz')];
+    slowa.forEach((e, i) => e.style.setProperty('--i', i));
+    wiersze.forEach((e, k) => e.style.setProperty('--i', slowa.length + 1 + k * 3));
+    el.style.setProperty('--jedn', slowa.length + 1 + wiersze.length * 3 + 2);
+    return { el, s: new Sprezyna(0, 0.3), w: new Sprezyna(0, 0.3) };
+  });
+
+  // Taśma z logami: jedzie sama, a przewijanie ją popycha
+  const tasmaM = document.getElementById('tasmaMarek');
+  const zestaw = tasmaM.firstElementChild;
+  for (let i = 0; i < 7; i++) tasmaM.append(zestaw.cloneNode(true));
+  let przesun = 0, predkosc = 0, yTasmy = scrollY, tasmaGotowa = false;
+
+  // Taśmę można złapać i przeciągnąć na boki (mysz, palec, gładzik w bok);
+  // po puszczeniu leci dalej z prędkością rzutu i łagodnie wraca do swojego tempa.
+  const oknoT = tasmaM.parentElement;
+  let trzymamT = false, ostXT = 0, lotT = 0, histT = [];
+  oknoT.addEventListener('pointerdown', e => {
+    if (e.button) return;
+    trzymamT = true; ostXT = e.clientX; lotT = 0; histT = [{ x: e.clientX, t: e.timeStamp }];
+    oknoT.setPointerCapture(e.pointerId); oknoT.classList.add('trzymam');
+  });
+  oknoT.addEventListener('pointermove', e => {
+    if (!trzymamT) return;
+    przesun -= e.clientX - ostXT; ostXT = e.clientX;
+    histT.push({ x: e.clientX, t: e.timeStamp });
+    while (histT.length > 2 && e.timeStamp - histT[0].t > 100) histT.shift();
+  });
+  const puscT = e => {
+    if (!trzymamT) return;
+    trzymamT = false; oknoT.classList.remove('trzymam');
+    const a = histT[0], b = histT[histT.length - 1], ms = b.t - a.t;
+    if (e.type !== 'pointercancel' && ms > 0 && e.timeStamp - b.t < 80) lotT = ogr(-(b.x - a.x) / ms * 1000, -5000, 5000);
+  };
+  oknoT.addEventListener('pointerup', puscT);
+  oknoT.addEventListener('pointercancel', puscT);
+  oknoT.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault(); przesun += e.deltaX; lotT = 0;
+  }, { passive: false });
+  oknoT.addEventListener('dragstart', e => e.preventDefault());
+
+  // Kółko „Zobacz” i głębia w kartach projektów
+  const babel = document.createElement('div');
+  babel.className = 'babel'; babel.textContent = 'Zobacz'; babel.setAttribute('aria-hidden', 'true');
+  document.body.append(babel);
+  const bx = new Sprezyna(0, 0.2), by = new Sprezyna(0, 0.2), bs = new Sprezyna(0, 0.35, 0.72);
+  const kartyP = [...document.querySelectorAll('.karta')].map(el => {
+    const k = { el, mx: new Sprezyna(0, 0.45), my: new Sprezyna(0, 0.45) };
+    el.addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      const r = el.getBoundingClientRect();
+      k.mx.cel = ((e.clientX - r.left) / r.width - 0.5) * 2; k.my.cel = ((e.clientY - r.top) / r.height - 0.5) * 2;
+      if (bs.cel === 0 && bs.x < 0.05) { bx.x = e.clientX; by.x = e.clientY; }
+      bx.cel = e.clientX; by.cel = e.clientY; bs.cel = 1;
+    });
+    el.addEventListener('pointerleave', () => { k.mx.cel = 0; k.my.cel = 0; bs.cel = 0; });
+    return k;
+  });
+  addEventListener('scroll', () => { bs.cel = 0; }, { passive: true });
+
+  function mocnaKlatka(n, dt, y, vh) {
+    pochX.cel = mysz.x; pochY.cel = mysz.y; pochX.krok(dt); pochY.krok(dt);
+
+    sceny.forEach(sc => {
+      const r = sc.el.getBoundingClientRect();
+      sc.s.cel = SPOKOJ ? 1 : ogr(-r.top / (r.height - vh));
+      sc.w.cel = SPOKOJ ? 1 : Math.min(ogr((vh - r.top) / vh), ogr(r.bottom / vh));
+      sc.s.krok(dt); sc.w.krok(dt);
+      sc.el.style.setProperty('--s', sc.s.x.toFixed(4));
+      sc.el.style.setProperty('--wej', sc.w.x.toFixed(4));
+    });
+
+    if (!SPOKOJ) {
+      const krok = Math.min(dt, 0.05);
+      const chwilowa = krok > 0 ? (y - yTasmy) / krok : 0; yTasmy = y;
+      predkosc += (chwilowa - predkosc) * Math.min(1, krok * 7);
+      // Taśma jedzie cały czas, powoli; startuje z Red Bullem na środku paska.
+      const sz = zestaw.offsetWidth;
+      if (sz && !tasmaGotowa) {
+        const rb = zestaw.firstElementChild.getBoundingClientRect(), t0x = tasmaM.getBoundingClientRect().left;
+        przesun = (((rb.left - t0x + rb.width / 2 - tasmaM.parentElement.clientWidth / 2) % sz) + sz) % sz;
+        tasmaGotowa = true;
+      } else if (sz) {
+        if (!trzymamT) { przesun += (15 + lotT) * krok; lotT *= Math.exp(-2.2 * krok); }
+        przesun = ((przesun % sz) + sz) % sz;
+      }
+      tasmaM.style.transform = `translate3d(${(-przesun).toFixed(2)}px, 0, 0) skewX(${ogr(predkosc * -0.002, -4, 4).toFixed(2)}deg)`;
+    }
+
+    [bx, by, bs].forEach(sp => sp.krok(dt));
+    babel.style.transform = `translate3d(${bx.x.toFixed(1)}px, ${by.x.toFixed(1)}px, 0) translate(-50%, -50%) scale(${Math.max(0, bs.x).toFixed(3)})`;
+    kartyP.forEach(k => {
+      if (k.mx.stoi && k.my.stoi) return;
+      k.mx.krok(dt); k.my.krok(dt);
+      k.el.style.setProperty('--mx', k.mx.x.toFixed(3)); k.el.style.setProperty('--my', k.my.x.toFixed(3));
+    });
+  }
+
+  requestAnimationFrame(klatka);
+})();
+</script>
+
+</body>
+</html>
