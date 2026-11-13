@@ -678,8 +678,6 @@
   .portret .glowa-ruch { position: absolute; inset: 0; background: url(zasoby/foto/portret-glowa.webp) center 22% / cover no-repeat; transform-origin: 52.2% 56%; will-change: transform; }
   /* mrugnięcie: na ułamek sekundy pojawiają się powieki z klatki z zamkniętymi oczami */
   .portret .oczy { position: absolute; inset: 0; background: url(zasoby/foto/portret-oczy.webp) center 22% / cover no-repeat; opacity: 0; }
-  /* kropla w wodzie: pojedyncze litery na czas fali */
-  .kropla-litery .lit { display: inline-block; }
   .portret .oczy.mruga { animation: mrugniecie .2s ease-in-out; }
   @keyframes mrugniecie { 0%, 100% { opacity: 0; } 35%, 60% { opacity: 1; } }
   /* tło „O mnie” to 8-sekundowa pętla z Veo: liście lekko się ruszają, w połowie za drzewami przelatuje ptak */
@@ -719,6 +717,25 @@
   }
 
 
+  /* poświata na nagłówku: jasna, rozciągnięta w bok smuga podąża za kursorem po literach */
+  .start h1 .wer .sl {
+    --kol: var(--tekst); --blask: #1f6bff; --ga: 0;
+    background: radial-gradient(ellipse 20rem 6.875rem at var(--gx, -62.4375rem) var(--gy, -62.4375rem),
+      color-mix(in srgb, var(--blask) calc(var(--ga) * 100%), var(--kol)) 0%, var(--kol) 78%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .start h1 .wer > span:not(.sl) .sl { --kol: var(--szary); --blask: #6ea8ff; }
+
+
+  /* żółta poświata za kursorem na wybranych napisach */
+  .blask {
+    background: radial-gradient(ellipse 20rem 6.875rem at var(--gx, -62.4375rem) var(--gy, -62.4375rem),
+      color-mix(in srgb, var(--blask) calc(var(--ga, 0) * 100%), var(--kol)) 0%, var(--kol) 78%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .podpis-tadek span.blask { background-size: auto; }
+
+
   /* przyciski „Wyślij mi wiadomość”: powiększenie, przyciąganie do kursora, żółty błysk i strzałka, która wysyła */
   .guzik {
     position: relative; overflow: hidden; isolation: isolate;
@@ -750,6 +767,8 @@
 
 
   /* ramka pod poświatę sięga poza ogonki liter (y, ę, j, g, ą) i akcenty, żeby nic nie było ucinane */
+  .start h1 .wer .sl, .blask { padding: .14em .06em .26em; margin: -.14em -.06em -.26em; }
+  .podpis-tadek span.blask { padding: .02em 0 0; margin: 0; }
 
 
   /* przy odbiciu na dole cały podpis „Tadek” (z rozmyciem) zastępuje kopia, która rośnie w dół
@@ -1577,6 +1596,36 @@
     dopasuj(); addEventListener('resize', dopasuj); if (document.fonts) document.fonts.ready.then(dopasuj);
   }
 
+  // ── Poświata na nagłówku: smuga światła za kursorem, płynnie dogania mysz i gaśnie po wyjściu
+  const naglowek = document.querySelector('.start h1');
+  if (naglowek && matchMedia('(hover: hover)').matches) {
+    const cel = { x: 0, y: 0, a: 0 }, poz = { x: 0, y: 0, a: 0 };
+    let biegnie = false, poprzPosw = 0;
+    const krokPosw = n => {
+      const dt = Math.min(0.05, Math.max(0, (n - poprzPosw) / 1000)); poprzPosw = n;
+      const k = 1 - Math.exp(-dt * 12), ka = 1 - Math.exp(-dt * 6);
+      poz.x += (cel.x - poz.x) * k; poz.y += (cel.y - poz.y) * k; poz.a += (cel.a - poz.a) * ka;
+      naglowek.querySelectorAll('.wer:not(.pod):not(.nad) .sl').forEach(sl => {
+        const r = sl.getBoundingClientRect();
+        sl.style.setProperty('--gx', (poz.x - r.left).toFixed(1) + 'px');
+        sl.style.setProperty('--gy', (poz.y - r.top).toFixed(1) + 'px');
+        sl.style.setProperty('--ga', poz.a.toFixed(3));
+      });
+      if (Math.abs(cel.a - poz.a) < 0.002 && cel.a === 0) { biegnie = false; return; }
+      requestAnimationFrame(krokPosw);
+    };
+    const start = () => { if (!biegnie) { biegnie = true; poprzPosw = performance.now(); requestAnimationFrame(krokPosw); } };
+    document.querySelector('.start').addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      const r = naglowek.getBoundingClientRect(), zapas = 90;
+      const blisko = e.clientX > r.left - zapas && e.clientX < r.right + zapas && e.clientY > r.top - zapas && e.clientY < r.bottom + zapas;
+      if (blisko && cel.a === 0) { poz.x = e.clientX; poz.y = e.clientY; }
+      cel.x = e.clientX; cel.y = e.clientY; cel.a = blisko ? 1 : 0; start();
+    });
+    document.querySelector('.start').addEventListener('pointerleave', () => { cel.a = 0; start(); });
+  }
+
+
   // ── Portret w „O mnie”: tło z tyłu, postać z przodu. Delikatny ruch kamery i gałęzi cały czas,
   //    a pod kursorem warstwy rozjeżdżają się jak w kartach projektów.
   const portret = document.getElementById('portret');
@@ -1688,114 +1737,56 @@
     }
   }
 
-  // ── Kropla w wodzie: gdy kursor przejeżdża po tekście (a na pierwszym ekranie także sama, co 6–8 s), w tym miejscu
-  //    „wpada kropla”. Litery delikatnie rozjeżdżają się od niej jak tafla wody:
-  //    · w pierwszej chwili litery tuż przy kropli lekko się uginają (uderzenie),
-  //    · krąg biegnie na zewnątrz i zwalnia, robi się szerszy i łagodniejszy (grzbiet odpycha, dolina przyciąga),
-  //    · tuż za nim idzie druga, słabsza fala.
-  //    Na czas fali tekst dzielony jest na litery przesuwane w ułamkach piksela; każda trzyma swoje miejsce
-  //    ze zwykłego tekstu (kerning), więc nic nie przeskakuje. Potem tekst wraca do pierwotnej postaci.
-  if (!SPOKOJ) {
-    const TEKST = 'h1, h2, h3, h4, p, li, summary, button, .guzik, .kto';
-    const aktywne = new Map();                                       // element → { litery, krople }
-    let biegnie = false, ostX = -999, ostY = -999, ostT = 0, ostEl = null;
-    const scal = (el, litery) => {
-      el.classList.remove('kropla-litery');
-      litery.forEach(l => l.sp.replaceWith(l.sp.textContent));
-      el.normalize();
+  // ── Żółta poświata na: karcie kontaktu, nagłówku pytań, „Zróbmy film.” i wielkim „Tadek”
+  if (matchMedia('(hover: hover)').matches) {
+    const GRUPY = [
+      { pole: '.wizyt h3', cele: '.wizyt h3, .wizyt h3 b' },
+      { pole: '#pytania .tytul', cele: '#pytania .tytul .sl' },
+      { pole: '#uslugi .tytul', cele: '#uslugi .tytul .sl' },
+      { pole: '.stopka h2', cele: '.stopka h2 .wer:not(.pod):not(.nad) .sl, .stopka h2 .wer:not(.pod):not(.nad)' },
+      { pole: '.podpis-tadek', cele: '#podpisTadek' },
+    ].map(g => ({ ...g, a: 0, celA: 0 }));
+    const mysz2 = { x: -999, y: -999 }, pozM = { x: -999, y: -999 };
+    const przygotuj = el => {
+      if (el.dataset.kol) return;
+      const c = getComputedStyle(el).color; el.dataset.kol = c;
+      const m = c.match(/[\d.]+/g) || [0, 0, 0], jasny = (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > 0.45;
+      el.style.setProperty('--kol', c); el.style.setProperty('--blask', jasny ? '#6ea8ff' : '#1f6bff');
+      el.classList.add('blask');
     };
-    const podziel = el => {
-      const litery = [], w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
-        acceptNode: n => (n.parentElement.closest('script, style, svg, .rolka, .lit') || !n.nodeValue.trim()) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
-      });
-      const wezly = []; while (w.nextNode()) wezly.push(w.currentNode);
-      wezly.forEach(n => {
-        const f = document.createDocumentFragment();
-        for (const z of n.nodeValue) {
-          if (/\s/.test(z)) { f.append(z); continue; }
-          const sp = document.createElement('span'); sp.className = 'lit'; sp.textContent = z; f.append(sp); litery.push({ sp });
-        }
-        n.replaceWith(f);
-      });
-      if (!litery.length) return litery;
-      const r0 = el.getBoundingClientRect();
-      litery.forEach(l => { const q = l.sp.getBoundingClientRect(); l.bx = q.left; l.bsy = q.top + q.height / 2; });
-      el.classList.add('kropla-litery');
-      let przelamane = false;
-      litery.forEach(l => {
-        const q = l.sp.getBoundingClientRect();
-        l.kx = l.bx - q.left;                                         // poprawka kerningu: litera zostaje na swoim miejscu
-        if (Math.abs(l.bsy - (q.top + q.height / 2)) > 4) przelamane = true;   // tekst przełamałby się inaczej — bez efektu
-        l.x = l.bx + q.width / 2 - r0.left; l.y = l.bsy - r0.top;
-        l.sp.style.transform = `translate(${l.kx.toFixed(2)}px, 0)`;
-      });
-      if (przelamane) { scal(el, litery); return []; }
-      return litery;
-    };
-    // jedna fala w punkcie (odległość d od kropli, czas t w s): grzbiet-dolina na biegnącym, zwalniającym kręgu
-    const fala = (d, t, czoloBazowe) => {
-      const czolo = 6 + 430 * 1.1 * (1 - Math.exp(-t / 1.1)) - czoloBazowe;   // szybko na starcie, potem zwalnia
-      const szer = 34 + 34 * t;                                                // fala się rozlewa
-      const x = (d - czolo) / szer;
-      return -x * Math.exp(-x * x) * 2.33;
-    };
-    const krok = () => {
-      const teraz = performance.now();
-      aktywne.forEach((st, el) => {
-        st.krople = st.krople.filter(k => teraz - k.t0 < k.czas);
-        if (!st.krople.length) { scal(el, st.litery); aktywne.delete(el); return; }
-        st.litery.forEach(l => {
-          let dx = 0, dy = 0;
-          st.krople.forEach(k => {
-            const ms = teraz - k.t0, t = ms / 1000, p = ms / k.czas;
-            const vx = l.x - k.x, vy = l.y - k.y, d = Math.hypot(vx, vy) || 1;
-            const zanik = Math.min(1, p * 7) * Math.pow(1 - p, 1.25) * Math.min(1, 170 / (d + 90));
-            const promien = (fala(d, t, 0) + 0.45 * fala(d, Math.max(0, t - 0.2), 0)) * k.sila * zanik;
-            dx += vx / d * promien; dy += vy / d * promien;
-            if (t < 0.4) dy += k.sila * 0.55 * Math.exp(-((d / 46) ** 2)) * Math.sin(Math.PI * t / 0.4);   // uderzenie kropli
-          });
-          l.sp.style.transform = `translate(${(l.kx + dx).toFixed(2)}px, ${dy.toFixed(2)}px)`;
+    let biegnieB = false, poprzB = 0;
+    const krokB = n => {
+      const dt = Math.min(0.05, Math.max(0, (n - poprzB) / 1000)); poprzB = n;
+      const k = 1 - Math.exp(-dt * 12), ka = 1 - Math.exp(-dt * 6);
+      pozM.x += (mysz2.x - pozM.x) * k; pozM.y += (mysz2.y - pozM.y) * k;
+      let dalej = false;
+      GRUPY.forEach(g => {
+        g.a += (g.celA - g.a) * ka;
+        if (g.a < 0.002 && g.celA === 0) { if (g.a !== 0) { g.a = 0; } }
+        else dalej = true;
+        document.querySelectorAll(g.cele).forEach(el => {
+          if (el.matches('.wer') && el.querySelector('.sl')) return;   // słowa mają własną poświatę
+          przygotuj(el);
+          const r = el.getBoundingClientRect();
+          el.style.setProperty('--gx', (pozM.x - r.left).toFixed(1) + 'px');
+          el.style.setProperty('--gy', (pozM.y - r.top).toFixed(1) + 'px');
+          el.style.setProperty('--ga', g.a.toFixed(3));
         });
       });
-      if (aktywne.size) requestAnimationFrame(krok); else biegnie = false;
+      if (dalej) requestAnimationFrame(krokB); else biegnieB = false;
     };
-    const kropla = (el, cx, cy, czas = 1500, sila = 2.2) => {
-      let st = aktywne.get(el);
-      if (!st) {
-        const litery = podziel(el); if (!litery.length) return;
-        st = { litery, krople: [] }; aktywne.set(el, st);
-      }
-      const r = el.getBoundingClientRect();
-      st.krople.push({ x: cx - r.left, y: cy - r.top, t0: performance.now(), czas, sila });
-      if (st.krople.length > 2) st.krople.shift();
-      if (!biegnie) { biegnie = true; requestAnimationFrame(krok); }
-    };
-    if (matchMedia('(hover: hover)').matches) {
-      addEventListener('pointermove', e => {
-        if (e.pointerType === 'touch') return;
-        const el = e.target.closest ? e.target.closest(TEKST) : null;
-        if (!el || el.closest('.stos, #portret, .narzedzia, .okno, .gora, .podpis-tadek') || el.querySelector('video, img, canvas, .rolka') || el.textContent.trim().length < 2) return;
-        const teraz = performance.now(), dal = Math.hypot(e.clientX - ostX, e.clientY - ostY);
-        if (el === ostEl && teraz - ostT < 800 && dal < 120) return;
-        if (teraz - ostT < 250) return;
-        ostX = e.clientX; ostY = e.clientY; ostT = teraz; ostEl = el;
-        kropla(el, e.clientX, e.clientY);
-      }, { passive: true });
-    }
-    // pierwszy ekran: zamiast połysku co 6–8 s sama spada kropla w losowym miejscu nagłówka,
-    // a fala rozchodzi się po nagłówku i dalej po tekstach pod nim
-    const STARTOWE = ['.start h1', '.start .fach', '.start .opis p'];
-    const samaKropla = () => {
-      const h1 = document.querySelector('.start h1');
-      const odUzytkownika = performance.now() - ostT;
-      if (h1 && !document.hidden && scrollY < innerHeight * 0.5 && odUzytkownika > 2000) {
-        const wer = h1.querySelector('.wer:not(.pod):not(.nad)') || h1, r = wer.getBoundingClientRect();
-        const cx = r.left + r.width * (0.2 + Math.random() * 0.6), cy = r.top + r.height * (0.35 + Math.random() * 0.45);
-        STARTOWE.forEach(sel => document.querySelectorAll(sel).forEach(el => kropla(el, cx, cy, 2600, 2.4)));
-      }
-      setTimeout(samaKropla, 6000 + Math.random() * 2000);
-    };
-    setTimeout(samaKropla, 2400);                                    // pierwsza kropla zaraz po wczytaniu, jak wcześniej połysk
+    addEventListener('pointermove', e => {
+      if (e.pointerType === 'touch') return;
+      const nowa = mysz2.x === -999; mysz2.x = e.clientX; mysz2.y = e.clientY; if (nowa) { pozM.x = e.clientX; pozM.y = e.clientY; }
+      let ktos = false;
+      GRUPY.forEach(g => {
+        const el = document.querySelector(g.pole); if (!el) return;
+        const r = el.getBoundingClientRect(), zap = 90;
+        g.celA = (e.clientX > r.left - zap && e.clientX < r.right + zap && e.clientY > r.top - zap && e.clientY < r.bottom + zap) ? 1 : 0;
+        if (g.celA || g.a > 0.002) ktos = true;
+      });
+      if (ktos && !biegnieB) { biegnieB = true; poprzB = performance.now(); requestAnimationFrame(krokB); }
+    }, { passive: true });
   }
 
   // ── Przyciski przyciągają się lekko do kursora
@@ -1808,6 +1799,44 @@
       });
       g.addEventListener('pointerleave', () => { g.style.setProperty('--bx', '0px'); g.style.setProperty('--by', '0px'); });
     });
+  }
+
+  // ── Połysk na pierwszym ekranie: co kilka sekund żółte światło przelatuje ukośnie
+  //    przez nagłówek i wszystkie teksty pod nim. Pierwszy raz zaraz po wczytaniu.
+  if (!SPOKOJ) {
+    const kol = document.querySelector('.start .srodek > div:first-child');
+    const CELE = '.start h1 .wer:not(.pod):not(.nad) .sl, .start .fach .sl, .start .opis .sl';
+    const szykuj = el => {
+      if (el.closest('h1') || el.dataset.kol) return;
+      const c = getComputedStyle(el).color; el.dataset.kol = c;
+      const m = c.match(/[\d.]+/g) || [0, 0, 0], jasny = (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) / 255 > 0.45;
+      el.style.setProperty('--kol', c); el.style.setProperty('--blask', jasny ? '#6ea8ff' : '#1f6bff');
+      el.classList.add('blask');
+    };
+    const CZAS = 1700, CO = 5200, PIERWSZY = 1900;
+    let start0 = performance.now() + PIERWSZY;
+    const przelot = n => {
+      if (document.hidden || scrollY > innerHeight * 0.8 || !kol) { start0 = n + 800; requestAnimationFrame(przelot); return; }
+      const t = n - start0;
+      if (t >= 0 && t <= CZAS) {
+        const kr = kol.getBoundingClientRect(), pr = t / CZAS;
+        const e = pr < 0.5 ? 2 * pr * pr : 1 - Math.pow(-2 * pr + 2, 2) / 2;          // płynny start i hamowanie
+        const sx = kr.left - 260 + e * (kr.width + 620), ga = Math.sin(Math.PI * pr);
+        document.querySelectorAll(CELE).forEach(el => {
+          szykuj(el);
+          const r = el.getBoundingClientRect();
+          const x = sx - (r.top - kr.top) * 0.45;                                      // ukośna smuga
+          el.style.setProperty('--gx', (x - r.left).toFixed(1) + 'px');
+          el.style.setProperty('--gy', (r.height / 2).toFixed(1) + 'px');
+          el.style.setProperty('--ga', ga.toFixed(3));
+        });
+      } else if (t > CZAS) {
+        document.querySelectorAll(CELE).forEach(el => el.style.setProperty('--ga', '0'));
+        start0 += CO;
+      }
+      requestAnimationFrame(przelot);
+    };
+    requestAnimationFrame(przelot);
   }
 
   // ── Odbicie na dole: po dojechaniu do końca strona zjeżdża jeszcze kawałek z rosnącym oporem
