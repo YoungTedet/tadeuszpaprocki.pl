@@ -2017,7 +2017,10 @@
       if ((wraca && n - wLocie.t > 60) || n - wLocie.t > 450) { wLocie = null; cele(); }
     }
     // bez interakcji przez 6 s: następny film na wierzch (pauza nad stosem, przy przeciąganiu, poza ekranem i przy otwartym oknie)
-    if (rozlozone && !SPOKOJ && !nadStosem && !ciag && !wLocie && rozrzut < 0.25 && n - ostInter > 6000 && !okno.classList.contains('widac')) {
+    // na komputerze stos stoi obok tekstu (zmiana tylko na samej górze), na telefonie jest pod tekstem — wystarczy, że go widać
+    const rStos = stos.getBoundingClientRect(), widacStos = rStos.top < vh * 0.85 && rStos.bottom > vh * 0.15;
+    const stosNaMiejscu = innerWidth > 820 ? rozrzut < 0.25 : widacStos;
+    if (rozlozone && !SPOKOJ && !nadStosem && !ciag && !wLocie && stosNaMiejscu && n - ostInter > 6000 && !okno.classList.contains('widac')) {
       ostInter = n; naSpod(karty[kolej[0]], 2600, -600);
     }
     karty.forEach(k => {
